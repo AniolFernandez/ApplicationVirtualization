@@ -1,0 +1,11 @@
+<aside [class.aside-disabled]="!asideActive">
+    <div class="loader" id="aside-loader" *ngIf="!loaded"></div>
+    <ng-container *ngFor="let category of categories;">
+        <details [open]="category.isOpen">
+            <summary>{{category.name}}</summary>
+            <ng-container *ngFor="let app of category.apps;">
+                <app-application [app]=app (openAppEvent)="openAppEvent.emit($event)"></app-application>
+            </ng-container>
+        </details>
+    </ng-container>
+</aside>

@@ -1,0 +1,112 @@
+aside {
+    box-sizing: border-box;
+    position: relative;
+    display: block;
+    min-width: var(--aside-width);
+    height: calc(100vh - var(--header-height));
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 1px;
+    background-color: var(--gray);
+    padding: calc(var(--side-padding)/2) 0 0 var(--side-padding);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    z-index: 9;
+    transition: 1s;
+    width: 0;
+}
+
+summary {
+    font-weight: bold;
+    cursor: pointer;
+} 
+summary {
+    padding: 5px;
+    display: block;
+    position: relative;
+    cursor: pointer;
+}
+  
+summary:before {
+    content: '';
+    border-width: .4rem;
+    border-style: solid;
+    border-color: transparent transparent transparent var(--black);
+    position: absolute;
+    top: 11px;
+    left: -5px;
+    transform: rotate(0);
+    transform-origin: .2rem 50%;
+    transition: .25s transform ease;
+}
+
+details[open] > summary:before {
+    transform: rotate(90deg);
+}
+
+
+details summary::-webkit-details-marker {
+    display:none;
+}
+
+aside::-webkit-scrollbar {
+    width: 18px;
+}
+
+aside::-webkit-scrollbar-thumb {
+    background: var(--soft-gray); 
+    border: 7px  var(--gray) solid;
+    border-right: 4px var(--gray) solid;
+    border-radius: 30px;
+}
+
+aside::-webkit-scrollbar-thumb:hover {
+    background: var(--soft-gray); 
+}
+
+.aside-disabled {
+    min-width: 0px; padding-left: 0; opacity: 0;
+}
+
+
+.loader {
+    width: 50.4px;
+    height: 67.2px;
+    margin: auto;
+    margin-top: 10px;
+    --c: linear-gradient(var(--main-color)  0 0);
+    background: var(--c) 0%   50%,
+         var(--c) 50%  50%,
+         var(--c) 100% 50%;
+    background-size: 10.1px 50%;
+    background-repeat: no-repeat;
+    animation: bars-anim 1s infinite linear;
+}
+
+
+@media (max-width:750px) { 
+    aside{
+        min-width: calc(var(--aside-width)*0.75);
+    }
+    summary:before {
+        top: 9px;
+    }
+}
+
+@keyframes bars-anim {
+    20% {
+        background-position: 0% 0%  ,50% 50% ,100% 50%;
+    }
+    
+    40% {
+        background-position: 0% 100%,50% 0%  ,100% 50%;
+    }
+    
+    60% {
+        background-position: 0% 50% ,50% 100%,100% 0%;
+    }
+    
+    80% {
+        background-position: 0% 50% ,50% 50% ,100% 100%;
+    }
+}
+    

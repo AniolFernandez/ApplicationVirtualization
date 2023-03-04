@@ -1,0 +1,11 @@
+<nav>
+    <div class="open-apps" id="openApps" (wheel)="onWheel($event)" #openAppsDiv>
+        <ng-container *ngFor="let app of openApps">
+            <app-application [inOpenApps]="true" [app]=app (openAppEvent)="openAppEvent.emit(app)" (closeAppEvent)="closeAppEvent.emit($event)"></app-application>
+        </ng-container>
+    </div>
+    <div class="tools">
+        <span class="vr"></span>
+        <img src="/assets/img/fullscreen.svg" id="toggle-fullscreen" (click)="openFullscreen()"/>
+    </div>
+</nav>

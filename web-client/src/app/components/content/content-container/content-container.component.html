@@ -1,0 +1,18 @@
+<div class="content-container" [class.content-container-aside-disabled]="!asideActive">
+    <app-content-navigation [openApps]="openApps" (closeAppEvent)="closeAppEvent.emit($event)" (openAppEvent)="openAppEvent.emit($event)"></app-content-navigation>
+    <div id="display">
+        <video controls autoplay loop *ngIf="openApps.length != 0">
+            <source src="/assets/img/video.mp4" type="video/mp4"> 
+            Your browser does not support HTML video.
+            </video>
+        <div class="bg-ico">
+            <img src="/assets/img/happy.svg"/>
+            <h3>Selecciona una aplicació a executar</h3>
+        </div> 
+    </div>
+</div>
+<div class="fallback-resolution">
+    <img src="/assets/img/sad.svg"/>
+    <h3>Actualment la pàgina no està preparada per a la resolució del teu dispositiu.</h3>
+</div>
+

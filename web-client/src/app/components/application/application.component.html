@@ -1,0 +1,10 @@
+<div [ngClass]="{
+    'app': !app.selected || inOpenApps,
+    'selected-app': app.selected && !inOpenApps,
+    'active': app.active,
+    'in-open-apps': inOpenApps
+}" (click)="openThisApp()">
+<img src="{{app.ico}}"/>
+{{app.name}}
+<span *ngIf="inOpenApps" (click)="closeThisApp()"></span>
+</div>
