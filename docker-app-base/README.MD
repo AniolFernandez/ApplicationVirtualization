@@ -1,5 +1,5 @@
 # Build image
-`docker build . -t img-name`
+`docker build . -t appvirt-base`
 
 # Run image
-`docker run --rm -it --name gimp --network host img-name`
+`docker run --rm -it --name [container-name] --network host appvirt-base`
