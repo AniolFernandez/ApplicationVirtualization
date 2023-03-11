@@ -9,7 +9,7 @@ COPY config/gateway /gateway
 WORKDIR /gateway
 RUN apt-get update \
     && apt-get install xvfb x11vnc novnc i3 golang-go ffmpeg gimp -y \
-    && go build rtp-to-webrtc.go \
+    && go build \
     && rm -r *.* \
     && apt-get purge -y --auto-remove golang-go \
     && useradd -m USER \

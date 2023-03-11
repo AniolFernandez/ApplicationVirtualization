@@ -1,25 +1,83 @@
 package main
 
 import (
-	"fmt"
-	"io"
-	"io/ioutil"
+	"bytes"
 	"os"
+	"os/exec"
+	"io/ioutil"
 	"net"
 	"bufio"
-	"bytes"
+	"log"
+	"strings"
 	"compress/gzip"
 	"encoding/base64"
 	"encoding/json"
-	"strings"
 	"github.com/pion/webrtc/v2"
 	"github.com/pion/rtp"
 )
 
-func main() {
-	// Wait for the offer to be pasted
+func main(){
+	//******
+	//	1. Estableix connexió amb el servidor
+	//******
+	port, _ := os.LookupEnv("PROXY_PORT") //Llegeix el nº de port assignat pel servidor
+	port = strings.TrimSpace(port)
+	log.Println("Connectant amb 127.0.0.1:"+port)
+    proxy, err := net.Dial("tcp", "127.0.0.1:"+port)
+    if err != nil {
+        log.Println("Error en connectar-se amb el servidor.", err)
+        return
+    }
+    defer proxy.Close()
+    lector := bufio.NewReader(proxy)
+
+	//******
+	//	2. Rep SDP del client
+	//******
+	SDP, err := lector.ReadString('\n')
+	if err != nil {
+		log.Println("No s'ha pogut llegir l'SDP del client", err)
+		return
+	}
+	log.Println("Rebut SDP:",SDP)
+
+	//******
+	//	3. Inicia el bridge RTP-WebRTC i retorna SDP del contenidor
+	//******
+	chGateway := make(chan string)
+	go startWebRTCGateway(SDP, chGateway)
+	SDPContenidor := <- chGateway
+	log.Println("Enviant SDP del contenidor al client: ",SDPContenidor)
+	_, err = proxy.Write([]byte(SDPContenidor+"\n"))
+	if err != nil {
+		log.Println("No s'ha pogut enviar l'SDP del contenidor al client", err)
+		return
+	}
+
+
+	//******
+	//	4. Inicia l'event loop pels keystrokes
+	//******
+	log.Println("Retransmetent RTP -> WebRTC")
+	for {
+        // Llegeix i mostra de moment TODO: Executar accions
+        str, err := lector.ReadString('\n')
+        if err != nil {
+            log.Println("Error llegint", err)
+            return
+        }
+    }
+}
+
+    
+
+/*
+* Funció adaptada a partir de l'exemple de pion
+	https://github.com/pion/webrtc/tree/master/examples/rtp-to-webrtc
+*/
+func startWebRTCGateway(base64clientSDP string, ch chan string) {
 	offer := webrtc.SessionDescription{}
-	Decode(MustReadStdin(), &offer)
+	Decode(base64clientSDP, &offer)
 
 	// We make our own mediaEngine so we can place the sender's codecs in it.  This because we must use the
 	// dynamic media type from the sender in our answer. This is not required if we are the offerer
@@ -66,7 +124,9 @@ func main() {
 		}
 	}()
 
-	fmt.Println("Waiting for RTP Packets, please run GStreamer or ffmpeg now")
+	log.Println("Iniciant ffmpeg")
+	exec.Command("sh","-c","ffmpeg -r 30 -f x11grab -draw_mouse 0 -s 1920:1080 -i :99 -pix_fmt yuv420p -tune zerolatency -filter:v \"crop=1920:1080:0:0\" -c:v libx264 -quality realtime -f rtp rtp://127.0.0.1:5004").Start()
+	log.Println("ffmpeg iniciat")
 
 	// Listen for a single RTP Packet, we need this to determine the SSRC
 	inboundRTPPacket := make([]byte, 4096) // UDP MTU
@@ -93,7 +153,7 @@ func main() {
 	// Set the handler for ICE connection state
 	// This will notify you when the peer has connected/disconnected
 	peerConnection.OnICEConnectionStateChange(func(connectionState webrtc.ICEConnectionState) {
-		fmt.Printf("Connection State has changed %s \n", connectionState.String())
+		log.Println("Connection State has changed ", connectionState.String())
 	})
 
 	// Set the remote SessionDescription
@@ -113,13 +173,15 @@ func main() {
 	}
 
 	// Output the answer in base64 so we can paste it in browser
-	fmt.Println(Encode(answer))
+	log.Println("Enviant SDP")
+	ch <- Encode(answer)
+	log.Println("SDP enviat.")
 
 	// Read RTP packets forever and send them to the WebRTC Client
 	for {
 		n, _, err := listener.ReadFrom(inboundRTPPacket)
 		if err != nil {
-			fmt.Printf("error during read: %s", err)
+			log.Println("error during read: %s", err)
 			panic(err)
 		}
 
@@ -139,29 +201,6 @@ func main() {
 // Allows compressing offer/answer to bypass terminal input limits.
 const compress = false
 
-// MustReadStdin blocks until input is received from stdin
-func MustReadStdin() string {
-	r := bufio.NewReader(os.Stdin)
-
-	var in string
-	for {
-		var err error
-		in, err = r.ReadString('\n')
-		if err != io.EOF {
-			if err != nil {
-				panic(err)
-			}
-		}
-		in = strings.TrimSpace(in)
-		if len(in) > 0 {
-			break
-		}
-	}
-
-	fmt.Println("")
-
-	return in
-}
 
 // Encode encodes the input in base64
 // It can optionally zip the input before encoding

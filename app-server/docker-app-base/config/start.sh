@@ -4,4 +4,5 @@ export DISPLAY=:99
 x11vnc -display $DISPLAY -listen localhost -forever &
 /usr/share/novnc/utils/launch.sh --vnc localhost:5900 &
 i3 &
+/gateway/main &
 /run.sh

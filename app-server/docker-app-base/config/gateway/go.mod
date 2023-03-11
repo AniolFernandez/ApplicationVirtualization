@@ -1,4 +1,4 @@
-module appvirt
+module main
 
 go 1.18
 
