@@ -23,13 +23,13 @@ func main(){
 	port, _ := os.LookupEnv("PROXY_PORT") //Llegeix el nº de port assignat pel servidor
 	port = strings.TrimSpace(port)
 	log.Println("Connectant amb 127.0.0.1:"+port)
-    proxy, err := net.Dial("tcp", "127.0.0.1:"+port)
-    if err != nil {
-        log.Println("Error en connectar-se amb el servidor.", err)
-        return
-    }
-    defer proxy.Close()
-    lector := bufio.NewReader(proxy)
+	proxy, err := net.Dial("tcp", "127.0.0.1:"+port)
+	if err != nil {
+		log.Println("Error en connectar-se amb el servidor.", err)
+		return
+	}
+	defer proxy.Close()
+	lector := bufio.NewReader(proxy)
 
 	//******
 	//	2. Rep SDP del client
@@ -60,13 +60,13 @@ func main(){
 	//******
 	log.Println("Retransmetent RTP -> WebRTC")
 	for {
-        // Llegeix i mostra de moment TODO: Executar accions
-        str, err := lector.ReadString('\n')
-        if err != nil {
-            log.Println("Error llegint", err)
-            return
-        }
-    }
+		// Llegeix i mostra de moment TODO: Executar accions
+		str, err := lector.ReadString('\n')
+		if err != nil {
+			log.Println("Error llegint", err)
+			return
+		}
+	}
 }
 
     
