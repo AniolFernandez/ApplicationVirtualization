@@ -6,8 +6,8 @@ export class AppStream{
     }
 
     public stream?: MediaStream;
-    private socket?: WebSocket;
-    private peerConnection?: RTCPeerConnection;
+    private socket!: WebSocket;
+    private peerConnection!: RTCPeerConnection;
 
     public closeConnection(){
         if(this.peerConnection)
@@ -24,7 +24,7 @@ export class AppStream{
                 this.stream = event.streams[0];
             }
             this.peerConnection.onicecandidate = event => {
-                if (this.socket && this.peerConnection && event.candidate === null)
+                if (event.candidate === null)
                     this.socket.send(JSON.stringify({sdp:btoa(JSON.stringify(this.peerConnection.localDescription))}));
             }
             this.peerConnection.addTransceiver('video', {'direction': 'recvonly'});
@@ -32,8 +32,7 @@ export class AppStream{
         };
         this.socket.onmessage = msg => {
             try {
-                if(this.peerConnection)
-                    this.peerConnection.setRemoteDescription(new RTCSessionDescription(JSON.parse(atob(msg.data))));
+                this.peerConnection.setRemoteDescription(new RTCSessionDescription(JSON.parse(atob(msg.data))));
             } catch (e) {
                 alert(e);
             }

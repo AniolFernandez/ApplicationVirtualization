@@ -40,13 +40,54 @@
 
 video {
     position: absolute;
-    width: 100%; 
+    max-width: 100%; 
     max-height: 100%; 
-    min-height: 100%; 
+/*  min-height: 100%; */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 1;
     margin: auto 0;
+}
+
+.black-bg {
     background-color: var(--black);
- }
+}
+
+
+.loader {
+    width: 100.8px;
+    height: 174.4px;
+    margin: auto;
+    top: 35%;
+    position: relative;
+    --c: linear-gradient(var(--main-color)  0 0);
+    background: var(--c) 0%   50%,
+         var(--c) 50%  50%,
+         var(--c) 100% 50%;
+    background-size: 20.1px 50%;
+    background-repeat: no-repeat;
+    animation: bars-anim 1s infinite linear;
+}
+
+@keyframes bars-anim {
+    20% {
+        background-position: 0% 0%  ,50% 50% ,100% 50%;
+    }
+    
+    40% {
+        background-position: 0% 100%,50% 0%  ,100% 50%;
+    }
+    
+    60% {
+        background-position: 0% 50% ,50% 100%,100% 0%;
+    }
+    
+    80% {
+        background-position: 0% 50% ,50% 50% ,100% 100%;
+    }
+}
+  
 
 @media (max-width:750px) { 
     .content-container{

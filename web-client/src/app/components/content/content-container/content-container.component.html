@@ -1,12 +1,12 @@
 <div class="content-container" [class.content-container-aside-disabled]="!asideActive">
     <app-content-navigation [openApps]="globals.openApps" (closeAppEvent)="closeAppEvent.emit($event)" (openAppEvent)="openAppEvent.emit($event)"></app-content-navigation>
-    <div id="display">
-        <h1 *ngIf="globals.activeApp && !globals.openAppsStreams[globals.activeApp.name].stream">APP IS NOW LOADING</h1>
-        <video autoplay [srcObject]="globals.openAppsStreams[globals.activeApp.name].stream" *ngIf="globals.activeApp && globals.openAppsStreams[globals.activeApp.name].stream"></video>
+    <div id="display" [ngClass]="{ 'black-bg': globals.activeApp && globals.openAppsStreams[globals.activeApp.name].stream}">
+        <video #stream autoplay [srcObject]="globals.openAppsStreams[globals.activeApp.name].stream" *ngIf="globals.activeApp && globals.openAppsStreams[globals.activeApp.name].stream" (mousemove)="onVideoMouseMove($event)" ></video>
         <div class="bg-ico" *ngIf="!globals.activeApp">
             <img src="/assets/img/happy.svg"/>
             <h3>Selecciona una aplicació a executar</h3>
-        </div> 
+        </div>
+        <div class="loader" id="aside-loader" *ngIf="globals.activeApp && !globals.openAppsStreams[globals.activeApp.name].stream"></div>
     </div>
 </div>
 <div class="fallback-resolution">
