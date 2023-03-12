@@ -1,11 +1,9 @@
 <div class="content-container" [class.content-container-aside-disabled]="!asideActive">
-    <app-content-navigation [openApps]="openApps" (closeAppEvent)="closeAppEvent.emit($event)" (openAppEvent)="openAppEvent.emit($event)"></app-content-navigation>
+    <app-content-navigation [openApps]="globals.openApps" (closeAppEvent)="closeAppEvent.emit($event)" (openAppEvent)="openAppEvent.emit($event)"></app-content-navigation>
     <div id="display">
-        <video controls autoplay loop *ngIf="openApps.length != 0">
-            <source src="/assets/img/video.mp4" type="video/mp4"> 
-            Your browser does not support HTML video.
-            </video>
-        <div class="bg-ico">
+        <h1 *ngIf="globals.activeApp && !globals.openAppsStreams[globals.activeApp.name].stream">APP IS NOW LOADING</h1>
+        <video autoplay [srcObject]="globals.openAppsStreams[globals.activeApp.name].stream" *ngIf="globals.activeApp && globals.openAppsStreams[globals.activeApp.name].stream"></video>
+        <div class="bg-ico" *ngIf="!globals.activeApp">
             <img src="/assets/img/happy.svg"/>
             <h3>Selecciona una aplicació a executar</h3>
         </div> 

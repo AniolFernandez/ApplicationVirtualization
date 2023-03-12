@@ -1,7 +1,7 @@
 export class Application{
     constructor(
-        public name: String,
-        public ico: String,
+        public name: string,
+        public ico: string,
         public active: boolean,
         public selected: boolean
     ){}

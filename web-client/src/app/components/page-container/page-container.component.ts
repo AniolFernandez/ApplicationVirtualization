@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Application } from 'src/app/models/application';
+import { Globals } from 'src/app/Globals';
+import { AppStream } from 'src/app/models/appStream';
 
 @Component({
   selector: 'app-page-container',
@@ -9,27 +11,30 @@ import { Application } from 'src/app/models/application';
 export class PageContainerComponent {
   @Input() asideActive: boolean = true;
 
-  public openApps: Application[] = [];
-  private activeApp: Application | null = null;
-
   openApp(app: Application){
     if(!app.selected){
-      this.openApps.push(app);
+      Globals.openApps.push(app);
+      Globals.openAppsStreams[app.name] = new AppStream("wss://192.168.1.67:8443/");
     }
-    if(this.activeApp){
-      this.activeApp.active=false;
+    if(Globals.activeApp){
+      Globals.activeApp.active=false;
     }
-    this.activeApp=app;
-    this.activeApp.selected=true;
-    this.activeApp.active=true;
+    Globals.activeApp=app;
+    Globals.activeApp.selected=true;
+    Globals.activeApp.active=true;
   }
 
   closeApp(app: Application){
-    this.openApps=this.openApps.filter((x) => x!=app);
-    if(this.activeApp===app && this.openApps.length>0){
-      this.openApp(this.openApps[this.openApps.length-1]);
+    Globals.openApps=Globals.openApps.filter((x) => x!=app);
+    if(Globals.activeApp==app){
+      if(Globals.openApps.length>0)
+        this.openApp(Globals.openApps[Globals.openApps.length-1]);
+      else
+        Globals.activeApp=null;
     }
     app.active=false;
     app.selected=false;
+    Globals.openAppsStreams[app.name].closeConnection();
+    delete Globals.openAppsStreams[app.name];
   }
 }

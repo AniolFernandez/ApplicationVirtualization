@@ -1,4 +1,4 @@
 <div class="page-container">
     <app-aside [asideActive]=asideActive (openAppEvent)="openApp($event)"></app-aside>
-    <app-content-container [asideActive]=asideActive [openApps]="openApps" (openAppEvent)="openApp($event)" (closeAppEvent)="closeApp($event)"></app-content-container>
+    <app-content-container [asideActive]=asideActive (openAppEvent)="openApp($event)" (closeAppEvent)="closeApp($event)"></app-content-container>
 </div>
