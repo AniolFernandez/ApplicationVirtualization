@@ -16,6 +16,28 @@ export class AppStream{
             this.socket.close();
     }
 
+    public moveMouse(x: any, y: any){
+        this.socket.send(JSON.stringify({
+            type: 'mv',
+            x: x,
+            y: y
+        }));
+    }
+
+    public mouseDown(left=true){
+        this.socket.send(JSON.stringify({
+            type: 'md',
+            left: left
+        }));
+    }
+
+    public mouseUp(left=true){
+        this.socket.send(JSON.stringify({
+            type: 'mu',
+            left: left
+        }));
+    }
+
     private startConnection(){
         this.socket= new WebSocket(this.endpoint);
         this.socket.onopen = () =>{

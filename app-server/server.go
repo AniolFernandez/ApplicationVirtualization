@@ -47,7 +47,7 @@ func startDockerImage(imageName string, port string, close chan struct{}){
 	//Inicialitza el contenidor
 	resp, err := dockerCli.ContainerCreate(context.Background(), &container.Config{
 		Image: imageName,
-		Env: []string{fmt.Sprintln("PROXY_PORT=",port)},
+		Env: []string{fmt.Sprintln("PROXY_PORT=",port),"DISPLAY=:99"},
 	}, &container.HostConfig{
 		NetworkMode: container.NetworkMode("host"),
         AutoRemove:  true,
@@ -158,8 +158,12 @@ func dockerProxy(ch chan string, close chan struct{}){
             return
     
         case pkt:= <- ch: //Missatge rebut del WS (str)
-            log.Println("Missatge rebut del WS", pkt)
-            //TODO: Gestió d'events i enviar cap al docker
+            //log.Println(pkt)
+            _, err = proxy.Write([]byte(pkt+"\n")) //Forward del paquet
+            if err != nil {
+                fmt.Println("Error en el forwarding de paquets entre WS i TCP", err)
+                return
+            }
         }
     }
 }
@@ -235,14 +239,12 @@ func socketHandler(w http.ResponseWriter, r *http.Request) {
     }
     
     //5. Loop d'events, es reven keys i es reenvien cap al docker.
-    //TODO:
     for {
         _, message, err := socket.ReadMessage()
         if err != nil {
-            log.Println("Error al llegir missatge", err)
             break
         }
-        log.Println("Error al llegir missatge %s", message)
+        proxyCh <- string(message)
     }
 }
 

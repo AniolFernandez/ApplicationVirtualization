@@ -9,14 +9,22 @@ import (
 	"bufio"
 	"log"
 	"strings"
+	"math"
 	"compress/gzip"
 	"encoding/base64"
 	"encoding/json"
 	"github.com/pion/webrtc/v2"
 	"github.com/pion/rtp"
+	"github.com/go-vgo/robotgo"
 )
 
+var xMax int
+var yMax int
+
 func main(){
+	ini()
+	
+
 	//******
 	//	1. Estableix connexió amb el servidor
 	//******
@@ -53,21 +61,73 @@ func main(){
 		log.Println("No s'ha pogut enviar l'SDP del contenidor al client", err)
 		return
 	}
+	log.Println("Retransmetent RTP -> WebRTC")
 
 
 	//******
 	//	4. Inicia l'event loop pels keystrokes
 	//******
-	log.Println("Retransmetent RTP -> WebRTC")
+	log.Println("Event loop iniciat.")
+	var jsonRecv map[string]interface{}
 	for {
-		// Llegeix i mostra de moment TODO: Executar accions
-		str, err := lector.ReadString('\n')
+		event, err := lector.ReadString('\n')
 		if err != nil {
 			log.Println("Error llegint", err)
 			return
 		}
+		json.Unmarshal([]byte(event), &jsonRecv)
+		eventSwitch(jsonRecv)
 	}
 }
+
+//Inicialització del controlador 
+func ini(){
+	display := ":99"
+	os.Setenv("DISPLAY", display)
+	robotgo.SetXDisplayName(display)
+	xMax, yMax = robotgo.GetScreenSize()
+	robotgo.MoveMouse(xMax, yMax) //Iniciar abaix a la dreta
+}
+
+//Switch d'events
+func eventSwitch(eventJSON map[string]interface{}){
+	//log.Println(eventJSON)
+	switch eventJSON["type"] {
+	case "mv":
+		eventMoveMouse(eventJSON)
+	case "md":
+		eventClickMouse(false, eventJSON["left"].(bool))
+	case "mu":
+		eventClickMouse(true, eventJSON["left"].(bool))
+	default:
+		log.Println("Rebut event desconegut.")
+	}
+}
+
+//Gestió d'event movimentn de mouse amb control de límits
+func eventMoveMouse(eventMoveMouseJSON map[string]interface{}){
+	x := int(math.Max(math.Min(math.Round(eventMoveMouseJSON["x"].(float64)), float64(xMax)),0))
+	y := int(math.Max(math.Min(math.Round(eventMoveMouseJSON["y"].(float64)), float64(yMax)),0))
+	robotgo.MoveMouse(x, y)
+}
+
+//Gestió de mouse down i mouse up
+func eventClickMouse(up bool, left bool){
+	var updwn string
+	var lfri string
+	if up {
+		updwn = "up"
+	} else {
+		updwn = "down"
+	}
+	if left {
+		lfri = "left"
+	} else {
+		lfri = "right"
+	}
+	robotgo.MouseToggle(updwn, lfri)
+}
+
 
     
 
@@ -125,7 +185,7 @@ func startWebRTCGateway(base64clientSDP string, ch chan string) {
 	}()
 
 	log.Println("Iniciant ffmpeg")
-	exec.Command("sh","-c","ffmpeg -r 30 -f x11grab -draw_mouse 0 -s 1920:1080 -i :99 -pix_fmt yuv420p -tune zerolatency -filter:v \"crop=1920:1080:0:0\" -c:v libx264 -quality realtime -f rtp rtp://127.0.0.1:5004").Start()
+	exec.Command("sh","-c","ffmpeg -r 30 -f x11grab -s 1920:1080 -i :99 -pix_fmt yuv420p -tune zerolatency -c:v libx264 -quality realtime -f rtp rtp://127.0.0.1:5004").Start()
 	log.Println("ffmpeg iniciat")
 
 	// Listen for a single RTP Packet, we need this to determine the SSRC

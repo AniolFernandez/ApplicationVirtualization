@@ -20,6 +20,7 @@ export class ContentContainerComponent {
   }
 
   onVideoMouseMove(event: MouseEvent) {
+    if(!this.globals.activeApp) return;
     var rect = this.streamElement.nativeElement.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
@@ -27,6 +28,16 @@ export class ContentContainerComponent {
     var naturalHeight = this.streamElement.nativeElement.videoHeight;
     var sourceX = (x / rect.width) * naturalWidth;
     var sourceY = (y / rect.height) * naturalHeight;
-    console.log(`Mouse position: (${sourceX},${sourceY})`);
+    this.globals.openAppsStreams[this.globals.activeApp.name].moveMouse(Math.round(sourceX), Math.round(sourceY));
+  }
+
+  onVideoMouseDown(event: MouseEvent){
+    if(!this.globals.activeApp) return;
+    this.globals.openAppsStreams[this.globals.activeApp.name].mouseDown(event.button === 0);
+  }
+
+  onVideoMouseUp(event: MouseEvent){
+    if(!this.globals.activeApp) return;
+    this.globals.openAppsStreams[this.globals.activeApp.name].mouseUp(event.button === 0);
   }
 }

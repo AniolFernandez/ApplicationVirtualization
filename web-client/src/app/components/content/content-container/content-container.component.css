@@ -48,6 +48,7 @@ video {
     transform: translate(-50%, -50%);
     z-index: 1;
     margin: auto 0;
+    cursor: none;
 }
 
 .black-bg {
