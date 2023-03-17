@@ -14,9 +14,15 @@ export class ContentContainerComponent {
   @ViewChild('stream') streamElement!: ElementRef;
   globals = Globals;
   constructor(){
-    setInterval(()=>{
-      if(this.globals.activeApp && this.globals.openAppsStreams[this.globals.activeApp.name].stream) ()=>{};
-    },500);
+    this.refresh();
+    window.addEventListener('keydown', (e) => this.onKey(e, false));
+    window.addEventListener('keyup', (e) => this.onKey(e, true));
+  }
+
+  onKey(event: KeyboardEvent, up: boolean) {
+    console.log(event.key);
+    if(!this.globals.activeApp) return;
+    this.globals.openAppsStreams[this.globals.activeApp.name].keyEvent(up,event.key);
   }
 
   onVideoMouseMove(event: MouseEvent) {
@@ -39,5 +45,9 @@ export class ContentContainerComponent {
   onVideoMouseUp(event: MouseEvent){
     if(!this.globals.activeApp) return;
     this.globals.openAppsStreams[this.globals.activeApp.name].mouseUp(event.button === 0);
+  }
+
+  refresh(){
+    setInterval(()=>{if(this.globals.activeApp && this.globals.openAppsStreams[this.globals.activeApp.name].stream) ()=>{};},500);
   }
 }

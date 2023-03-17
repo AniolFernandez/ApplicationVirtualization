@@ -252,5 +252,6 @@ func socketHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
     http.HandleFunc("/", socketHandler)
     cors := allowCors(http.DefaultServeMux)
-    log.Fatal(http.ListenAndServeTLS("0.0.0.0:8443", "cert.pem", "key.pem", cors))
+    //log.Fatal(http.ListenAndServeTLS("0.0.0.0:8443", "cert.pem", "key.pem", cors))
+    log.Fatal(http.ListenAndServe("0.0.0.0:8443", cors))
 }

@@ -91,14 +91,15 @@ func ini(){
 
 //Switch d'events
 func eventSwitch(eventJSON map[string]interface{}){
-	//log.Println(eventJSON)
 	switch eventJSON["type"] {
-	case "mv":
+	case "mv": //Mouse move
 		eventMoveMouse(eventJSON)
-	case "md":
+	case "md": //Mouse down
 		eventClickMouse(false, eventJSON["left"].(bool))
-	case "mu":
+	case "mu": //Mouse up
 		eventClickMouse(true, eventJSON["left"].(bool))
+	case "ky": //key
+		eventKey(eventJSON["up"].(bool), eventJSON["key"].(string))
 	default:
 		log.Println("Rebut event desconegut.")
 	}
@@ -128,6 +129,42 @@ func eventClickMouse(up bool, left bool){
 	robotgo.MouseToggle(updwn, lfri)
 }
 
+var keyMap = map[string]string{
+	//Arrows del teclat
+	"ArrowLeft": "left",
+	"ArrowDown": "down",
+	"ArrowRight": "right",
+	"ArrowUp": "up",
+
+	//Tecles especials
+	"Tab":"tab",
+	"Backspace":"backspace",
+	"Enter":"enter",
+	"Delete":"delete",
+	"Shift": "shift",
+	"Alt": "alt",
+	"Control": "control",
+	" " : "space"}
+
+//Gestió de key down i key up
+func eventKey(up bool, key string){
+	var updwn string
+	if up {
+		updwn = "up"
+	} else {
+		updwn = "down"
+	}
+	if len(key) == 1 && key != " " {
+		robotgo.KeyToggle(key, updwn)
+	} else {
+		mappedKey, ok := keyMap[key]
+		if ok {
+			robotgo.KeyToggle(mappedKey, updwn)
+		} else {
+			log.Println("Rebut tecla no mapejada.")
+		}
+	}    	
+}
 
     
 
