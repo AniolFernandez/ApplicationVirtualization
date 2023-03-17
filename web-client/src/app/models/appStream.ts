@@ -1,6 +1,7 @@
 export class AppStream{
     constructor(
-        public endpoint: string
+        public endpoint: string,
+        public onclose: any
     ){
         this.startConnection();
     }
@@ -61,5 +62,6 @@ export class AppStream{
                 alert(e);
             }
         };
+        this.socket.onclose = (e) => this.onclose();
     }
 }

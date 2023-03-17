@@ -14,7 +14,7 @@ export class PageContainerComponent {
   openApp(app: Application){
     if(!app.selected){
       Globals.openApps.push(app);
-      Globals.openAppsStreams[app.name] = new AppStream("ws://192.168.1.67:8443/");
+      Globals.openAppsStreams[app.name] = new AppStream("ws://192.168.1.67:8443/", () => this.closeApp(app));
     }
     if(Globals.activeApp){
       Globals.activeApp.active=false;
