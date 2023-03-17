@@ -1,41 +1,19 @@
 package main
 
 import (
-    "fmt"
-    "log"
-    "net"
-    "bufio"
+	"fmt"
+	"log"
+	"net"
+	"bufio"
+	"strconv"
     "context"
-    "strconv"
-    "net/http"
-    "encoding/json"
-    "github.com/gorilla/websocket"
-    "github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types"
     "github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 )
 
-// Permetem accés des de qualsevol origen al fer l'upgrade http -> ws
-var upgrader = websocket.Upgrader{
-    CheckOrigin: func(r *http.Request) bool {
-        return true
-    },
-} 
-
-// Permetem l'accés a peticions http des de qualsevol origen
-func allowCors(next http.Handler) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        w.Header().Set("Access-Control-Allow-Origin", "*")
-        if r.Method == http.MethodOptions {
-            w.WriteHeader(http.StatusNoContent)
-            return
-        }
-        next.ServeHTTP(w, r)
-    })
-}
-
 //Ens permet arrancar docker de forma asyncrona
-func startDockerImage(imageName string, port string, close chan struct{}){
+func StartDockerImage(imageName string, port string, close chan struct{}){
 	log.Println("Inicialitzant el contenidor...")
 	//Obté docker API
 	dockerCli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
@@ -70,8 +48,9 @@ func startDockerImage(imageName string, port string, close chan struct{}){
 	<-close
 }
 
+
 //Comunicació asyncrona entre docker i servidor per socket TCP
-func dockerProxy(ch chan string, close chan struct{}){
+func DockerProxy(ch chan string, close chan struct{}){
     defer func() {
         ch<-"" //Enviar str buit per finalitzar
     }()
@@ -149,7 +128,6 @@ func dockerProxy(ch chan string, close chan struct{}){
         ch <- proxy //Push del SDP
     }
 
-
     //Executar l'event loop (rebre dades del WS i reenviarles pel socket)
     for {
         select {
@@ -158,7 +136,6 @@ func dockerProxy(ch chan string, close chan struct{}){
             return
     
         case pkt:= <- ch: //Missatge rebut del WS (str)
-            //log.Println(pkt)
             _, err = proxy.Write([]byte(pkt+"\n")) //Forward del paquet
             if err != nil {
                 fmt.Println("Error en el forwarding de paquets entre WS i TCP", err)
@@ -166,92 +143,4 @@ func dockerProxy(ch chan string, close chan struct{}){
             }
         }
     }
-}
- 
- 
-
-/*
-    GESTIÓ DEL WEB-SOCKET:
-    Gestió de la connexió d'un socket. Aquest socket pertany a una sola connexió d'un sol client.
-    Tot el cicle de vida es manté dins aquesta funció:
-    1. Upgrade d'HTTP a WS
-    2. Recepció de token d'accés i SDP
-    3. Arranc del docker
-    4. Retorn d'SDP del docker
-    5. Loop d'events
-*/
-func socketHandler(w http.ResponseWriter, r *http.Request) {
-    var jsonRecv map[string]interface{}
-
-    //*******
-    //  1. Upgrade HTTP a WebSocket
-    //*******
-    socket, err := upgrader.Upgrade(w, r, nil)
-    if err != nil {
-        log.Println("Error upgrade http -> ws", err)
-        return
-    }
-    defer socket.Close() //Tanquem la connexió al sortir
- 
-    //*******
-    //  2. Recepció de token d'accés i SDP
-    //*******   
-    _, msg, err := socket.ReadMessage()
-    if err != nil {
-        log.Println("Error al llegir missatge", err)
-        return
-    }
-    json.Unmarshal([]byte(msg), &jsonRecv)
-    log.Println("Client connectat.")
-
-    //*******
-    //  3. S'encén el docker. Esperar a rebre un señal de que ja està actiu i enviar-li l'SDP del client al docker
-    //*******
-
-    // Inici de socket local per la comunicació amb docker
-    proxyCh := make(chan string) //Canal de comunicació entre socket tcp i ws
-    proxyStopSignal := make(chan struct{}) //Canal d'ordre de finalització del socket tcp
-    defer close(proxyStopSignal)
-    go dockerProxy(proxyCh, proxyStopSignal)
-
-    portSocket := <-proxyCh //Espera a l'inici del socket per obtenir el nº de port
-    
-    //Inici de la imatge de docker
-    dockerStopSignal := make(chan struct{}) //Canal d'ordre de finalització de docker
-    defer close(dockerStopSignal)
-    go startDockerImage("appvirt",portSocket,dockerStopSignal)
-
-    proxyCh <- fmt.Sprintln(jsonRecv["sdp"]) //Enviem l'SDP del client
-    SDP := <-proxyCh //Espera a rebre l'SDP del contenidor
-    if SDP == "" {
-        log.Println("No s'ha rebut SDP del contenidor.", err)
-        return
-    }
-    
-    //*******
-    //  4. Es retorna l'SDP del docker al client
-    //*******
-    log.Println("Enviant SDP del contenidor al client", SDP)
-    err = socket.WriteMessage(websocket.TextMessage, []byte(SDP))
-    if err != nil {
-        log.Println("Error a l'enviar al client l'SDP del contenidor:", err)
-        return
-    }
-    
-    //5. Loop d'events, es reven keys i es reenvien cap al docker.
-    for {
-        _, message, err := socket.ReadMessage()
-        if err != nil {
-            break
-        }
-        proxyCh <- string(message)
-    }
-}
-
- 
-func main() {
-    http.HandleFunc("/", socketHandler)
-    cors := allowCors(http.DefaultServeMux)
-    //log.Fatal(http.ListenAndServeTLS("0.0.0.0:8443", "cert.pem", "key.pem", cors))
-    log.Fatal(http.ListenAndServe("0.0.0.0:8443", cors))
 }
