@@ -24,23 +24,17 @@ export class AppStream{
         }));
     }
 
-    public mouseDown(left: boolean){
+    public mouseClick(up: boolean, left: boolean){
         this.socket.send(JSON.stringify({
-            type: 'md',
-            left: left
-        }));
-    }
-
-    public mouseUp(left: boolean){
-        this.socket.send(JSON.stringify({
-            type: 'mu',
+            type: 'mc',
+            up: up,
             left: left
         }));
     }
 
     public keyEvent(up: boolean, key: string){
         this.socket.send(JSON.stringify({
-            type: 'ky',
+            type: 'kp',
             up: up,
             key: key
         }));

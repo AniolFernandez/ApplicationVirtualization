@@ -39,12 +39,12 @@ export class ContentContainerComponent {
 
   onVideoMouseDown(event: MouseEvent){
     if(!this.globals.activeApp) return;
-    this.globals.openAppsStreams[this.globals.activeApp.name].mouseDown(event.button === 0);
+    this.globals.openAppsStreams[this.globals.activeApp.name].mouseClick(false, event.button === 0);
   }
 
   onVideoMouseUp(event: MouseEvent){
     if(!this.globals.activeApp) return;
-    this.globals.openAppsStreams[this.globals.activeApp.name].mouseUp(event.button === 0);
+    this.globals.openAppsStreams[this.globals.activeApp.name].mouseClick(true, event.button === 0);
   }
 
   refresh(){

@@ -94,11 +94,9 @@ func eventSwitch(eventJSON map[string]interface{}){
 	switch eventJSON["type"] {
 	case "mv": //Mouse move
 		eventMoveMouse(eventJSON)
-	case "md": //Mouse down
-		eventClickMouse(false, eventJSON["left"].(bool))
-	case "mu": //Mouse up
-		eventClickMouse(true, eventJSON["left"].(bool))
-	case "ky": //key
+	case "mc": //Mouse click
+		eventClickMouse(eventJSON["up"].(bool), eventJSON["left"].(bool))
+	case "kp": //key press
 		eventKey(eventJSON["up"].(bool), eventJSON["key"].(string))
 	default:
 		log.Println("Rebut event desconegut.")
