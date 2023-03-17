@@ -1,176 +1,23 @@
 package main
 
 import (
-	"bytes"
-	"os"
-	"os/exec"
-	"io/ioutil"
-	"net"
-	"bufio"
 	"log"
-	"strings"
-	"math"
+	"net"
+	"os/exec"
+	"bytes"
+	"io/ioutil"
 	"compress/gzip"
 	"encoding/base64"
 	"encoding/json"
 	"github.com/pion/webrtc/v2"
 	"github.com/pion/rtp"
-	"github.com/go-vgo/robotgo"
 )
-
-var xMax int
-var yMax int
-
-func main(){
-	ini()
-	
-
-	//******
-	//	1. Estableix connexió amb el servidor
-	//******
-	port, _ := os.LookupEnv("PROXY_PORT") //Llegeix el nº de port assignat pel servidor
-	port = strings.TrimSpace(port)
-	log.Println("Connectant amb 127.0.0.1:"+port)
-	proxy, err := net.Dial("tcp", "127.0.0.1:"+port)
-	if err != nil {
-		log.Println("Error en connectar-se amb el servidor.", err)
-		return
-	}
-	defer proxy.Close()
-	lector := bufio.NewReader(proxy)
-
-	//******
-	//	2. Rep SDP del client
-	//******
-	SDP, err := lector.ReadString('\n')
-	if err != nil {
-		log.Println("No s'ha pogut llegir l'SDP del client", err)
-		return
-	}
-	log.Println("Rebut SDP:",SDP)
-
-	//******
-	//	3. Inicia el bridge RTP-WebRTC i retorna SDP del contenidor
-	//******
-	chGateway := make(chan string)
-	go startWebRTCGateway(SDP, chGateway)
-	SDPContenidor := <- chGateway
-	log.Println("Enviant SDP del contenidor al client: ",SDPContenidor)
-	_, err = proxy.Write([]byte(SDPContenidor+"\n"))
-	if err != nil {
-		log.Println("No s'ha pogut enviar l'SDP del contenidor al client", err)
-		return
-	}
-	log.Println("Retransmetent RTP -> WebRTC")
-
-
-	//******
-	//	4. Inicia l'event loop pels keystrokes
-	//******
-	log.Println("Event loop iniciat.")
-	var jsonRecv map[string]interface{}
-	for {
-		event, err := lector.ReadString('\n')
-		if err != nil {
-			log.Println("Error llegint", err)
-			return
-		}
-		json.Unmarshal([]byte(event), &jsonRecv)
-		eventSwitch(jsonRecv)
-	}
-}
-
-//Inicialització del controlador 
-func ini(){
-	display := ":99"
-	os.Setenv("DISPLAY", display)
-	robotgo.SetXDisplayName(display)
-	xMax, yMax = robotgo.GetScreenSize()
-	robotgo.MoveMouse(xMax, yMax) //Iniciar abaix a la dreta
-}
-
-//Switch d'events
-func eventSwitch(eventJSON map[string]interface{}){
-	switch eventJSON["type"] {
-	case "mv": //Mouse move
-		eventMoveMouse(eventJSON)
-	case "mc": //Mouse click
-		eventClickMouse(eventJSON["up"].(bool), eventJSON["left"].(bool))
-	case "kp": //key press
-		eventKey(eventJSON["up"].(bool), eventJSON["key"].(string))
-	default:
-		log.Println("Rebut event desconegut.")
-	}
-}
-
-//Gestió d'event movimentn de mouse amb control de límits
-func eventMoveMouse(eventMoveMouseJSON map[string]interface{}){
-	x := int(math.Max(math.Min(math.Round(eventMoveMouseJSON["x"].(float64)), float64(xMax)),0))
-	y := int(math.Max(math.Min(math.Round(eventMoveMouseJSON["y"].(float64)), float64(yMax)),0))
-	robotgo.MoveMouse(x, y)
-}
-
-//Gestió de mouse down i mouse up
-func eventClickMouse(up bool, left bool){
-	var updwn string
-	var lfri string
-	if up {
-		updwn = "up"
-	} else {
-		updwn = "down"
-	}
-	if left {
-		lfri = "left"
-	} else {
-		lfri = "right"
-	}
-	robotgo.MouseToggle(updwn, lfri)
-}
-
-var keyMap = map[string]string{
-	//Arrows del teclat
-	"ArrowLeft": "left",
-	"ArrowDown": "down",
-	"ArrowRight": "right",
-	"ArrowUp": "up",
-
-	//Tecles especials
-	"Tab":"tab",
-	"Backspace":"backspace",
-	"Enter":"enter",
-	"Delete":"delete",
-	"Shift": "shift",
-	"Alt": "alt",
-	"Control": "control",
-	" " : "space"}
-
-//Gestió de key down i key up
-func eventKey(up bool, key string){
-	var updwn string
-	if up {
-		updwn = "up"
-	} else {
-		updwn = "down"
-	}
-	if len(key) == 1 && key != " " {
-		robotgo.KeyToggle(key, updwn)
-	} else {
-		mappedKey, ok := keyMap[key]
-		if ok {
-			robotgo.KeyToggle(mappedKey, updwn)
-		} else {
-			log.Println("Rebut tecla no mapejada.")
-		}
-	}    	
-}
-
-    
 
 /*
 * Funció adaptada a partir de l'exemple de pion
 	https://github.com/pion/webrtc/tree/master/examples/rtp-to-webrtc
 */
-func startWebRTCGateway(base64clientSDP string, ch chan string) {
+func StartWebRTCGateway(base64clientSDP string, ch chan string) {
 	offer := webrtc.SessionDescription{}
 	Decode(base64clientSDP, &offer)
 
