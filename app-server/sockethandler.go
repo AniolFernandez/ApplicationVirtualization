@@ -1,10 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
-	"encoding/json"
+//	"encoding/json"
     "github.com/gorilla/websocket"
 )
 
@@ -13,13 +12,12 @@ import (
     Gestió de la connexió d'un socket. Aquest socket pertany a una sola connexió d'un sol client.
     Tot el cicle de vida es manté dins aquesta funció:
     1. Upgrade d'HTTP a WS
-    2. Recepció de token d'accés i SDP
-    3. Arranc del docker
-    4. Retorn d'SDP del docker
-    5. Loop d'events
+    2. TODO: Permisos
+    3. Arranc del docker assignant el port d'escolta local
+    4. Loop d'events (teclat, ratolí)
 */
 func SocketHandler(w http.ResponseWriter, r *http.Request) {
-    var jsonRecv map[string]interface{}
+    //var jsonRecv map[string]interface{}
 
     //*******
     //  1. Upgrade HTTP a WebSocket
@@ -30,58 +28,66 @@ func SocketHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
     defer socket.Close() //Tanquem la connexió al sortir
+    log.Println("Client connectat.")
  
     //*******
-    //  2. Recepció de token d'accés i SDP
-    //*******   
+    //  2. TODO: AQUI CALDRÍA REBRE QUINA APP ENCENDRE I COMPROVAR ELS PERMISOS
+    //*******
+    /*
     _, msg, err := socket.ReadMessage()
     if err != nil {
         log.Println("Error al llegir missatge", err)
         return
     }
     json.Unmarshal([]byte(msg), &jsonRecv)
-    log.Println("Client connectat.")
+    */
 
     //*******
-    //  3. S'encén el docker. Esperar a rebre un señal de que ja està actiu i enviar-li l'SDP del client al docker
+    //  3. S'encén el docker. Esperar a rebre un señal de que ja està actiu i estableix la connexió
     //*******
 
     // Inici de socket local per la comunicació amb docker
-    proxyCh := make(chan string) //Canal de comunicació entre socket tcp i ws
+    WSinTCPout := make(chan string) //Canal de comunicació entre socket ws i tcp
+    TCPinWSout := make(chan string) //Canal de comunicació entre socket tcp i ws
     proxyStopSignal := make(chan struct{}) //Canal d'ordre de finalització del socket tcp
     defer close(proxyStopSignal)
-    go DockerProxy(proxyCh, proxyStopSignal)
+    go DockerProxy(WSinTCPout, TCPinWSout, proxyStopSignal)
 
-    portSocket := <-proxyCh //Espera a l'inici del socket per obtenir el nº de port
+    var portSocket string = <- TCPinWSout //Espera a l'inici del socket per obtenir el nº de port
     
     //Inici de la imatge de docker
     dockerStopSignal := make(chan struct{}) //Canal d'ordre de finalització de docker
     defer close(dockerStopSignal)
     go StartDockerImage("appvirt",portSocket,dockerStopSignal)
 
-    proxyCh <- fmt.Sprintln(jsonRecv["sdp"]) //Enviem l'SDP del client
-    SDP := <-proxyCh //Espera a rebre l'SDP del contenidor
-    if SDP == "" {
-        log.Println("No s'ha rebut SDP del contenidor.", err)
-        return
-    }
+    
     
     //*******
-    //  4. Es retorna l'SDP del docker al client
+    //  4. Inici del proxy WS <-> TCP
     //*******
-    log.Println("Enviant SDP del contenidor al client", SDP)
-    err = socket.WriteMessage(websocket.TextMessage, []byte(SDP))
-    if err != nil {
-        log.Println("Error a l'enviar al client l'SDP del contenidor:", err)
-        return
-    }
-    
-    //5. Loop d'events, es reven keys i es reenvien cap al docker.
-    for {
-        _, message, err := socket.ReadMessage()
-        if err != nil {
+    log.Println("Proxy WS <-> TCP actiu.")
+    go func(){ //Llegir tot el que arriba del WS i reenviar-ho cap al docker
+        for {
+            _, message, err := socket.ReadMessage()
+            if err != nil {
+                break
+            }
+            WSinTCPout <- string(message)
+        }
+    }()
+    for {//Llegir tot el que arriba de TCP i reenviar-ho cap al client
+        var tcpMsg string = <- TCPinWSout
+        if tcpMsg == ""{ //Parem si es rep stop
+            log.Println("Stop signal rebut.")
             break
         }
-        proxyCh <- string(message)
+        err = socket.WriteMessage(websocket.TextMessage, []byte(tcpMsg))
+        if err != nil { //Parem si hi ha error
+            log.Println("Error a l'enviar TCP -> WS", err)
+            break
+        }
     }
+
+    //Fi.
+    log.Println("Finalitzat Proxy WS <-> TCP.")
 }

@@ -17,8 +17,9 @@ func main(){
 	//******
 	port, _ := os.LookupEnv("PROXY_PORT") //Llegeix el nº de port assignat pel servidor
 	port = strings.TrimSpace(port)
-	log.Println("Connectant amb 127.0.0.1:"+port)
-	proxy, err := net.Dial("tcp", "127.0.0.1:"+port)
+	target := "172.17.0.1:"+port
+	log.Println("Connectant amb "+target)
+	proxy, err := net.Dial("tcp", target)
 	if err != nil {
 		log.Println("Error en connectar-se amb el servidor.", err)
 		return
@@ -26,33 +27,19 @@ func main(){
 	defer proxy.Close()
 	lector := bufio.NewReader(proxy)
 
-	//******
-	//	2. Rep SDP del client
-	//******
-	SDP, err := lector.ReadString('\n')
-	if err != nil {
-		log.Println("No s'ha pogut llegir l'SDP del client", err)
-		return
-	}
-	log.Println("Rebut SDP:",SDP)
 
 	//******
-	//	3. Inicia el bridge RTP-WebRTC i retorna SDP del contenidor
+	//	2. Inicia el bridge RTP-WebRTC
 	//******
-	chGateway := make(chan string)
-	go StartWebRTCGateway(SDP, chGateway)
-	SDPContenidor := <- chGateway
-	log.Println("Enviant SDP del contenidor al client: ",SDPContenidor)
-	_, err = proxy.Write([]byte(SDPContenidor+"\n"))
-	if err != nil {
-		log.Println("No s'ha pogut enviar l'SDP del contenidor al client", err)
-		return
-	}
+	log.Println("Iniciant connexió RTP -> WebRTC")
+	esperarConnexioEstablerta := make(chan struct{})
+	go StartWebRTCGateway(proxy, lector, esperarConnexioEstablerta)
+	<- esperarConnexioEstablerta
 	log.Println("Retransmetent RTP -> WebRTC")
 
 
 	//******
-	//	4. Inicia l'event loop pels keystrokes
+	//	3. Inicia l'event loop pels keystrokes
 	//******
 	log.Println("Event loop iniciat.")
 	var jsonRecv map[string]interface{}

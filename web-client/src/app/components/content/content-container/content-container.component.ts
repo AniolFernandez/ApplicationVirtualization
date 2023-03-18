@@ -20,7 +20,6 @@ export class ContentContainerComponent {
   }
 
   onKey(event: KeyboardEvent, up: boolean) {
-    console.log(event.key);
     if(!this.globals.activeApp) return;
     this.globals.openAppsStreams[this.globals.activeApp.name].keyEvent(up,event.key);
   }

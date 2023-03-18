@@ -50,19 +50,19 @@ func StartDockerImage(imageName string, port string, close chan struct{}){
 
 
 //Comunicació asyncrona entre docker i servidor per socket TCP
-func DockerProxy(ch chan string, close chan struct{}){
+func DockerProxy(WSinTCPout chan string, TCPinWSout chan string, close chan struct{}){
     defer func() {
-        ch<-"" //Enviar str buit per finalitzar
+        TCPinWSout<-"" //Enviar str buit per finalitzar
     }()
 
-    //Inicia socket tcp escoltant per localhost a un port aleatori
-    lstn, err := net.Listen("tcp", "localhost:0")
+    //Inicia socket tcp escoltant per la interfície de docker a un port aleatori
+    lstn, err := net.Listen("tcp", "172.17.0.1:0")
     if err != nil {
         log.Println("Error en obrir socket d'escolta proxy intern:", err)
         return
     }
     defer lstn.Close() //Tancar al sortir
-    ch <- strconv.Itoa(lstn.Addr().(*net.TCPAddr).Port) //Enviem el nº de port obert
+    TCPinWSout <- strconv.Itoa(lstn.Addr().(*net.TCPAddr).Port) //Enviem el nº de port obert
 
     //Creem un canal per rebre la connexió o error del socket proxy
     connCh := make(chan net.Conn)
@@ -86,59 +86,41 @@ func DockerProxy(ch chan string, close chan struct{}){
         log.Println("Finalitzant socket proxy sense haver establert connexió amb el contenidor.")
         return
 
+    case err := <-errCh: //Error en acceptar la connexió
+        log.Println("Error en acceptar socket proxy", err)
+        return
+
     case proxy = <-connCh: //Connexió establerta
         log.Println("Establerta connexió amb el contenidor.")
         defer proxy.Close() //Finalitza en sortir
-        
-
-    case err := <-errCh: //Error en acceptar la connexió
-        fmt.Println("Error en acceptar socket proxy", err)
-        return
     }
 
-    SDPCli := <- ch //Esperem a tenir l'SDP del client
-    _, err = proxy.Write([]byte(SDPCli)) //Enviem l'SDP
-    if err != nil {
-        fmt.Println("Error en enviar SDP del client al contenidor", err)
-        return
-    }
-
-    proxyCh := make(chan string) //Creem un canal per rebre dades del docker
-    lector := bufio.NewReader(proxy) //Lector buffer
-
-    //Iniciem una goroutine per acceptar la connexió del socket proxy
+    //Iniciem una goroutine per llegir els missatges rebuts del docker de forma asyncrona
     go func() {
-        SDP, err := lector.ReadString('\n')
-        if err != nil {
-            log.Println("No s'ha pogut llegir l'SDP del contenidor", err)
-            proxyCh <- ""
+        lector := bufio.NewReader(proxy) //Lector buffer
+        for{
+            msgTcp, err := lector.ReadString('\n')
+            if err != nil {
+                log.Println("Error en el forwarding de paquets entre TCP->TCP", err)
+                TCPinWSout <- ""
+                break;
+            }
+            TCPinWSout <- msgTcp
         }
-        proxyCh <- SDP
     }()
 
     //Ens posem a l'espera de rebre l'SDP del docker o bé rebre senyal de finalització
-    log.Println("Esperant a rebre SDP del contenidor.")
-    select {
-    case <-close: //Finalitza per senyal
-        log.Println("Finalitzant socket proxy sense haver rebut SDP.")
-        return
-
-    case proxy := <-proxyCh: //SDP rebut
-        log.Println("Rebut SDP del contenidor.",proxy)
-        ch <- proxy //Push del SDP
-    }
-
-    //Executar l'event loop (rebre dades del WS i reenviarles pel socket)
-    for {
+    log.Println("Proxy TCP <-> WS iniciat.")
+    for{
         select {
         case <-close: //Finalitza per senyal
-            log.Println("Finalitzant socket proxy.")
+            log.Println("Finalitzant socket proxy per senyal de finalització.")
             return
     
-        case pkt:= <- ch: //Missatge rebut del WS (str)
-            _, err = proxy.Write([]byte(pkt+"\n")) //Forward del paquet
+        case pktWS:= <- WSinTCPout: //Missatge rebut del WS (str)
+            _, err = proxy.Write([]byte(pktWS+"\n")) //Forward del paquet
             if err != nil {
-                fmt.Println("Error en el forwarding de paquets entre WS i TCP", err)
+                log.Println("Error en el forwarding de paquets entre WS->TCP", err)
                 return
             }
         }

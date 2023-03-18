@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net"
+	"bufio"
 	"os/exec"
 	"bytes"
 	"io/ioutil"
@@ -17,43 +18,38 @@ import (
 * Funció adaptada a partir de l'exemple de pion
 	https://github.com/pion/webrtc/tree/master/examples/rtp-to-webrtc
 */
-func StartWebRTCGateway(base64clientSDP string, ch chan string) {
-	offer := webrtc.SessionDescription{}
-	Decode(base64clientSDP, &offer)
-
-	// We make our own mediaEngine so we can place the sender's codecs in it.  This because we must use the
-	// dynamic media type from the sender in our answer. This is not required if we are the offerer
-	mediaEngine := webrtc.MediaEngine{}
-	err := mediaEngine.PopulateFromSDP(offer)
-	if err != nil {
-		panic(err)
-	}
-
-	// Search for H264 Payload type. If the offer doesn't support H264 exit since
-	// since they won't be able to decode anything we send them
-	var payloadType uint8
-	for _, videoCodec := range mediaEngine.GetCodecsByKind(webrtc.RTPCodecTypeVideo) {
-		if videoCodec.Name == "H264" {
-			payloadType = videoCodec.PayloadType
-			break
-		}
-	}
-	if payloadType == 0 {
-		panic("Remote peer does not support H264")
-	}
-
-	// Create a new RTCPeerConnection
-	api := webrtc.NewAPI(webrtc.WithMediaEngine(mediaEngine))
-	peerConnection, err := api.NewPeerConnection(webrtc.Configuration{
+func StartWebRTCGateway(socketTcp net.Conn, tcpReader *bufio.Reader,establertaConnexio chan struct{}) {
+	var payloadType uint8 = 102; //H264
+	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{
 		ICEServers: []webrtc.ICEServer{
 			{
-				URLs: []string{"stun:stun.l.google.com:19302"},
+				URLs: []string{"turn:openrelay.metered.ca:80"},
+				Username: "openrelayproject",
+            	Credential: "openrelayproject",
 			},
 		},
+//		ICETransportPolicy: webrtc.ICETransportPolicyRelay,
 	})
 	if err != nil {
 		panic(err)
 	}
+
+
+	// When Pion gathers a new ICE Candidate send it to the client. This is how
+	// ice trickle is implemented. Everytime we have a new candidate available we send
+	// it as soon as it is ready. We don't wait to emit a Offer/Answer until they are
+	// all available
+	peerConnection.OnICECandidate(func(c *webrtc.ICECandidate) {
+		if c == nil {
+			return
+		}
+
+		outbound, marshalErr := json.Marshal(c.ToJSON())
+		if marshalErr != nil {
+			panic(marshalErr)
+		}
+		socketTcp.Write(outbound) //Forward del paquet
+	})
 
 	// Open a UDP Listener for RTP Packets on port 5004
 	listener, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.ParseIP("127.0.0.1"), Port: 5004})
@@ -98,27 +94,59 @@ func StartWebRTCGateway(base64clientSDP string, ch chan string) {
 		log.Println("Connection State has changed ", connectionState.String())
 	})
 
-	// Set the remote SessionDescription
-	if err = peerConnection.SetRemoteDescription(offer); err != nil {
-		panic(err)
+	loop:
+	for {
+		// Read each inbound WebSocket Message
+		msg, err := tcpReader.ReadString('\n')
+		if err != nil {
+			log.Println("Error llegint", err)
+			return
+		}
+
+		// Unmarshal each inbound WebSocket message
+		var (
+			candidate webrtc.ICECandidateInit
+			offer     webrtc.SessionDescription
+		)
+
+		switch {
+		// Attempt to unmarshal as a SessionDescription. If the SDP field is empty
+		// assume it is not one.
+		case json.Unmarshal([]byte(msg), &offer) == nil && offer.SDP != "":
+			if err = peerConnection.SetRemoteDescription(offer); err != nil {
+				panic(err)
+			}
+
+			answer, answerErr := peerConnection.CreateAnswer(nil)
+			if answerErr != nil {
+				panic(answerErr)
+			}
+
+			if err = peerConnection.SetLocalDescription(answer); err != nil {
+				panic(err)
+			}
+
+			outbound, marshalErr := json.Marshal(answer)
+			if marshalErr != nil {
+				panic(marshalErr)
+			}
+
+			log.Println("Enviant SDP")
+			socketTcp.Write([]byte(Encode(outbound)+"\n")) //Forward del paquet
+			break loop
+		// Attempt to unmarshal as a ICECandidateInit. If the candidate field is empty
+		// assume it is not one.
+		case json.Unmarshal([]byte(msg), &candidate) == nil && candidate.Candidate != "":
+			if err = peerConnection.AddICECandidate(candidate); err != nil {
+				panic(err)
+			}
+		default:
+			panic("Unknown message")
+		}
 	}
 
-	// Create answer
-	answer, err := peerConnection.CreateAnswer(nil)
-	if err != nil {
-		panic(err)
-	}
-
-	// Sets the LocalDescription, and starts our UDP listeners
-	if err = peerConnection.SetLocalDescription(answer); err != nil {
-		panic(err)
-	}
-
-	// Output the answer in base64 so we can paste it in browser
-	log.Println("Enviant SDP")
-	ch <- Encode(answer)
-	log.Println("SDP enviat.")
-
+	close(establertaConnexio)
+	log.Println("Retransmetent RTP -> WebRTC")
 	// Read RTP packets forever and send them to the WebRTC Client
 	for {
 		n, _, err := listener.ReadFrom(inboundRTPPacket)
