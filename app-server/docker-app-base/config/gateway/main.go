@@ -9,6 +9,8 @@ import (
 	"encoding/json"
 )
 
+const SOCKET_IP = "127.0.0.1"
+
 func main(){
 	Ini()
 
@@ -17,7 +19,7 @@ func main(){
 	//******
 	port, _ := os.LookupEnv("PROXY_PORT") //Llegeix el nº de port assignat pel servidor
 	port = strings.TrimSpace(port)
-	target := "172.17.0.1:"+port
+	target := SOCKET_IP+":"+port
 	log.Println("Connectant amb "+target)
 	proxy, err := net.Dial("tcp", target)
 	if err != nil {

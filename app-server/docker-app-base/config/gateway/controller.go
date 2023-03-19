@@ -12,8 +12,7 @@ var yMax int
 
 //Inicialització del controlador 
 func Ini(){
-	display := ":99"
-	os.Setenv("DISPLAY", display)
+	display, _ := os.LookupEnv("DISPLAY") //Llegeix el nº de port assignat pel servidor
 	robotgo.SetXDisplayName(display)
 	xMax, yMax = robotgo.GetScreenSize()
 	robotgo.MoveMouse(xMax, yMax) //Iniciar abaix a la dreta

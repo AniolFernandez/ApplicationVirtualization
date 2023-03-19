@@ -4,6 +4,7 @@ import (
 	"log"
 	"net"
 	"bufio"
+	"strconv"
 	"os/exec"
 	"bytes"
 	"io/ioutil"
@@ -23,15 +24,10 @@ func StartWebRTCGateway(socketTcp net.Conn, tcpReader *bufio.Reader,establertaCo
 	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{
 		ICEServers: []webrtc.ICEServer{
 			{
-				URLs: []string{"stun:172.17.0.1:3478"},
-			},
-			{
-				URLs: []string{"turn:172.17.0.1:3478"},
-				Username: "prova",
-            	Credential: "prova",
+				URLs: []string{"stun:stun.l.google.com:19302"},
 			},
 		},
-		ICETransportPolicy: webrtc.ICETransportPolicyRelay,
+//		ICETransportPolicy: webrtc.ICETransportPolicyRelay,
 	})
 	if err != nil {
 		panic(err)
@@ -56,7 +52,7 @@ func StartWebRTCGateway(socketTcp net.Conn, tcpReader *bufio.Reader,establertaCo
 	})
 
 	// Open a UDP Listener for RTP Packets on port 5004
-	listener, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.ParseIP("127.0.0.1"), Port: 5004})
+	listener, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.ParseIP("127.0.0.1"), Port: 0})
 	if err != nil {
 		panic(err)
 	}
@@ -67,7 +63,7 @@ func StartWebRTCGateway(socketTcp net.Conn, tcpReader *bufio.Reader,establertaCo
 	}()
 
 	log.Println("Iniciant ffmpeg")
-	exec.Command("sh","-c","ffmpeg -r 30 -f x11grab -s 1920:1080 -i :99 -pix_fmt yuv420p -tune zerolatency -c:v libx264 -quality realtime -f rtp rtp://127.0.0.1:5004").Start()
+	exec.Command("sh","-c","ffmpeg -r 30 -f x11grab -s 1920:1080 -i $DISPLAY -pix_fmt yuv420p -tune zerolatency -c:v libx264 -quality realtime -f rtp rtp://127.0.0.1:"+strconv.Itoa(listener.LocalAddr().(*net.UDPAddr).Port)).Start()
 	log.Println("ffmpeg iniciat")
 
 	// Listen for a single RTP Packet, we need this to determine the SSRC

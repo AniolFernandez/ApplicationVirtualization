@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net"
 	"bufio"
@@ -12,9 +11,11 @@ import (
 	"github.com/docker/docker/client"
 )
 
+var display int=99 //TODO: Fer bé, amb pila de ports disponibles
+
 //Ens permet arrancar docker de forma asyncrona
 func StartDockerImage(imageName string, port string, close chan struct{}){
-	log.Println("Inicialitzant el contenidor...")
+	log.Println("Inicialitzant el contenidor (D:",display," P:",port,")...")
 	//Obté docker API
 	dockerCli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
@@ -25,15 +26,16 @@ func StartDockerImage(imageName string, port string, close chan struct{}){
 	//Inicialitza el contenidor
 	resp, err := dockerCli.ContainerCreate(context.Background(), &container.Config{
 		Image: imageName,
-		Env: []string{fmt.Sprintln("PROXY_PORT=",port),"DISPLAY=:99"},
+		Env: []string{"PROXY_PORT="+port,"DISPLAY=:"+strconv.Itoa(display)},
 	}, &container.HostConfig{
-//		NetworkMode: container.NetworkMode("host"),
+		NetworkMode: container.NetworkMode("host"),
         AutoRemove:  true,
 	}, nil, nil, "")
 	if err != nil {
 		log.Println("Error en iniciar la imatge de docker", err)
 		return
 	}
+    display = display+1
 
 	// Inicia el contenidor
 	if err := dockerCli.ContainerStart(context.Background(), resp.ID, types.ContainerStartOptions{}); err != nil {
@@ -55,8 +57,8 @@ func DockerProxy(WSinTCPout chan string, TCPinWSout chan string, close chan stru
         TCPinWSout<-"" //Enviar str buit per finalitzar
     }()
 
-    //Inicia socket tcp escoltant per la interfície de docker a un port aleatori
-    lstn, err := net.Listen("tcp", "172.17.0.1:0")
+    //Inicia socket tcp escoltant a un port aleatori
+    lstn, err := net.Listen("tcp", "localhost:0")
     if err != nil {
         log.Println("Error en obrir socket d'escolta proxy intern:", err)
         return
@@ -102,7 +104,7 @@ func DockerProxy(WSinTCPout chan string, TCPinWSout chan string, close chan stru
         for{
             msgTcp, err := lector.ReadString('\n')
             if err != nil {
-                log.Println("Error en el forwarding de paquets entre TCP->TCP", err)
+                log.Println("Error en el forwarding de paquets entre TCP->WS", err)
                 TCPinWSout <- ""
                 break;
             }

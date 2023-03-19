@@ -46,15 +46,10 @@ export class AppStream{
         const config = {
             iceServers: [
             {
-                urls: "stun:"+this.endpoint+":3478",
+                urls: "stun:stun.l.google.com:19302",
             },
-            {
-                urls: "turn:"+this.endpoint+":3478",
-                username: "prova",
-                credential: "prova",
-            }
             ],
-            iceTransportPolicy: "relay" as RTCIceTransportPolicy,
+//            iceTransportPolicy: "relay" as RTCIceTransportPolicy,
         };
         this.socket.onmessage = msg => {
             if(msg.data == "ready"){
