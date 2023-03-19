@@ -23,16 +23,20 @@ func StartWebRTCGateway(socketTcp net.Conn, tcpReader *bufio.Reader,establertaCo
 	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{
 		ICEServers: []webrtc.ICEServer{
 			{
-				URLs: []string{"turn:openrelay.metered.ca:80"},
-				Username: "openrelayproject",
-            	Credential: "openrelayproject",
+				URLs: []string{"stun:172.17.0.1:3478"},
+			},
+			{
+				URLs: []string{"turn:172.17.0.1:3478"},
+				Username: "prova",
+            	Credential: "prova",
 			},
 		},
-//		ICETransportPolicy: webrtc.ICETransportPolicyRelay,
+		ICETransportPolicy: webrtc.ICETransportPolicyRelay,
 	})
 	if err != nil {
 		panic(err)
 	}
+
 
 
 	// When Pion gathers a new ICE Candidate send it to the client. This is how
@@ -92,6 +96,9 @@ func StartWebRTCGateway(socketTcp net.Conn, tcpReader *bufio.Reader,establertaCo
 	// This will notify you when the peer has connected/disconnected
 	peerConnection.OnICEConnectionStateChange(func(connectionState webrtc.ICEConnectionState) {
 		log.Println("Connection State has changed ", connectionState.String())
+		if connectionState.String()=="failed" {
+			panic("Connexió fallida.")
+		} 
 	})
 
 	loop:
@@ -133,15 +140,15 @@ func StartWebRTCGateway(socketTcp net.Conn, tcpReader *bufio.Reader,establertaCo
 
 			log.Println("Enviant SDP")
 			socketTcp.Write([]byte(Encode(outbound)+"\n")) //Forward del paquet
-			break loop
 		// Attempt to unmarshal as a ICECandidateInit. If the candidate field is empty
 		// assume it is not one.
 		case json.Unmarshal([]byte(msg), &candidate) == nil && candidate.Candidate != "":
+			log.Println("Rebut candidat:",msg)
 			if err = peerConnection.AddICECandidate(candidate); err != nil {
 				panic(err)
 			}
 		default:
-			panic("Unknown message")
+			break loop
 		}
 	}
 

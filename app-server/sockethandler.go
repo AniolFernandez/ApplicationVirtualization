@@ -65,7 +65,6 @@ func SocketHandler(w http.ResponseWriter, r *http.Request) {
     //*******
     //  4. Inici del proxy WS <-> TCP
     //*******
-    log.Println("Proxy WS <-> TCP actiu.")
     go func(){ //Llegir tot el que arriba del WS i reenviar-ho cap al docker
         for {
             _, message, err := socket.ReadMessage()

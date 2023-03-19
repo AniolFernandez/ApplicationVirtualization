@@ -35,7 +35,6 @@ func main(){
 	esperarConnexioEstablerta := make(chan struct{})
 	go StartWebRTCGateway(proxy, lector, esperarConnexioEstablerta)
 	<- esperarConnexioEstablerta
-	log.Println("Retransmetent RTP -> WebRTC")
 
 
 	//******

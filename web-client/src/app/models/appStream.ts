@@ -42,26 +42,32 @@ export class AppStream{
     }
 
     private startConnection(){
-        this.socket= new WebSocket(this.endpoint);
+        this.socket= new WebSocket(`ws://${this.endpoint}:8443/`);
         const config = {
-            iceServers: [{
-                            urls: "turn:openrelay.metered.ca:80",
-                            username: "openrelayproject",
-                            credential: "openrelayproject"
-                        }],
-//            iceTransportPolicy: "relay",
-        };
-        this.socket.onopen = () =>{
-            this.peerConnection = new RTCPeerConnection(config)
-            this.peerConnection.ontrack = event => { this.stream = event.streams[0]; }
-            this.peerConnection.onicecandidate = event => { if (event.candidate && event.candidate.candidate !== "") this.socket.send(JSON.stringify(event.candidate)); }
-            this.peerConnection.addTransceiver('video', {'direction': 'recvonly'});
-            this.peerConnection.createOffer().then(d => { 
-                this.peerConnection.setLocalDescription(d); 
-                this.socket.send(JSON.stringify(d));
-            });
+            iceServers: [
+            {
+                urls: "stun:"+this.endpoint+":3478",
+            },
+            {
+                urls: "turn:"+this.endpoint+":3478",
+                username: "prova",
+                credential: "prova",
+            }
+            ],
+            iceTransportPolicy: "relay" as RTCIceTransportPolicy,
         };
         this.socket.onmessage = msg => {
+            if(msg.data == "ready"){
+                this.peerConnection = new RTCPeerConnection(config)
+                this.peerConnection.ontrack = event => { this.stream = event.streams[0]; }
+                this.peerConnection.onicecandidate = event => { if (event.candidate && event.candidate.candidate !== "") this.socket.send(JSON.stringify(event.candidate)) }
+                this.peerConnection.addTransceiver('video', {'direction': 'recvonly'});
+                this.peerConnection.createOffer().then(d => { 
+                    this.peerConnection.setLocalDescription(d); 
+                    this.socket.send(JSON.stringify(d));
+                });
+                return;
+            }
             let obj = JSON.parse(atob(msg.data));
             if (!obj) {
                 console.log('failed to parse msg');
@@ -71,7 +77,6 @@ export class AppStream{
                 this.peerConnection.addIceCandidate(obj);
             } else {
                 obj = JSON.parse(atob(obj));
-                console.log(obj);
                 this.peerConnection.setRemoteDescription(obj);
             }
         };

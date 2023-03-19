@@ -26,7 +26,7 @@ RUN apt-get update \
     && chown USER:USER /run.sh \
     && chown -R USER:USER /home/USER/ \
     && chown -R USER:USER /gateway
-
+    
 #Execució com a usuari sense permisos
 USER USER
 

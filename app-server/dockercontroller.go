@@ -27,7 +27,7 @@ func StartDockerImage(imageName string, port string, close chan struct{}){
 		Image: imageName,
 		Env: []string{fmt.Sprintln("PROXY_PORT=",port),"DISPLAY=:99"},
 	}, &container.HostConfig{
-		NetworkMode: container.NetworkMode("host"),
+//		NetworkMode: container.NetworkMode("host"),
         AutoRemove:  true,
 	}, nil, nil, "")
 	if err != nil {
@@ -92,6 +92,7 @@ func DockerProxy(WSinTCPout chan string, TCPinWSout chan string, close chan stru
 
     case proxy = <-connCh: //Connexió establerta
         log.Println("Establerta connexió amb el contenidor.")
+        TCPinWSout <- "ready" //Enviem senyalització per a iniciar WebRTC
         defer proxy.Close() //Finalitza en sortir
     }
 
