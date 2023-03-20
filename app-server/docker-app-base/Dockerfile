@@ -18,7 +18,7 @@ RUN apt-get update \
     && apt-get install xvfb i3 golang-go ffmpeg gcc libc6-dev libx11-dev xorg-dev libxtst-dev xcb libxcb-xkb-dev x11-xkb-utils libx11-xcb-dev libxkbcommon-x11-dev libxkbcommon-dev gimp x11vnc novnc -y \
     && go build \
     && rm -r *.* \
-#   && apt-get purge -y --auto-remove golang-go \
+    && apt-get purge -y --auto-remove golang-go \
     && useradd -m USER \
     && chmod +x /start.sh \
     && chown USER:USER /start.sh \
@@ -26,7 +26,7 @@ RUN apt-get update \
     && chown USER:USER /run.sh \
     && chown -R USER:USER /home/USER/ \
     && chown -R USER:USER /gateway
-    
+
 #Execució com a usuari sense permisos
 USER USER
 

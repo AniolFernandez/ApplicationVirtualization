@@ -88,13 +88,16 @@ func StartWebRTCGateway(socketTcp net.Conn, tcpReader *bufio.Reader,establertaCo
 		panic(err)
 	}
 
+
+	connectionEstablished := make(chan interface{})
 	// Set the handler for ICE connection state
 	// This will notify you when the peer has connected/disconnected
 	peerConnection.OnICEConnectionStateChange(func(connectionState webrtc.ICEConnectionState) {
-		log.Println("Connection State has changed ", connectionState.String())
-		if connectionState.String()=="failed" {
+		status := connectionState.String()
+		log.Println("Connection State has changed ", status)
+		if status=="failed" {
 			panic("Connexió fallida.")
-		} 
+		}
 	})
 
 	loop:

@@ -73,6 +73,7 @@ export class AppStream{
             } else {
                 obj = JSON.parse(atob(obj));
                 this.peerConnection.setRemoteDescription(obj);
+                this.socket.send(JSON.stringify({type:"established"}));
             }
         };
         this.socket.onclose = (e) => this.onclose();
