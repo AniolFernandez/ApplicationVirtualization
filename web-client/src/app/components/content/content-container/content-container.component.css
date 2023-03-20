@@ -51,6 +51,22 @@ video {
     cursor: none;
 }
 
+video::-webkit-media-controls-fullscreen {
+    display: none !important;
+  }
+  
+  video::-webkit-media-controls {
+    pointer-events: none;
+  }
+  
+  video::-webkit-media-controls-enclosure {
+    pointer-events: none;
+  }
+  
+  video::-webkit-media-controls-panel {
+    display: none !important;
+  }
+
 .black-bg {
     background-color: var(--black);
 }
