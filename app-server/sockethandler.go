@@ -13,7 +13,7 @@ import (
     Tot el cicle de vida es manté dins aquesta funció:
     1. Upgrade d'HTTP a WS
     2. TODO: Permisos
-    3. Arranc del docker assignant el port d'escolta local
+    3. Arranc del docker assignant el port d'escolta local i volum
     4. Loop d'events (teclat, ratolí)
 */
 func SocketHandler(w http.ResponseWriter, r *http.Request) {
@@ -57,8 +57,10 @@ func SocketHandler(w http.ResponseWriter, r *http.Request) {
     
     //Inici de la imatge de docker
     dockerStopSignal := make(chan struct{}) //Canal d'ordre de finalització de docker
+    _, fullPath := InitializeDirectory()
     defer close(dockerStopSignal)
-    go StartDockerImage("appvirt",portSocket,dockerStopSignal)
+    defer DeleteDirectory(fullPath)
+    go StartDockerImage("appvirt", portSocket, fullPath, dockerStopSignal)
 
     
     

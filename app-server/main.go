@@ -27,6 +27,7 @@ func allowCors(next http.Handler) http.Handler {
 
  
 func main() {
+    InitializeVolumes()
     http.HandleFunc("/", SocketHandler)
     cors := allowCors(http.DefaultServeMux)
     //log.Fatal(http.ListenAndServeTLS("0.0.0.0:8443", "cert.pem", "key.pem", cors))

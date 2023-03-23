@@ -8,13 +8,14 @@ import (
     "context"
 	"github.com/docker/docker/api/types"
     "github.com/docker/docker/api/types/container"
+    "github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/client"
 )
 
 var display int=99 //TODO: Fer bé, amb pila de ports disponibles
 
 //Ens permet arrancar docker de forma asyncrona
-func StartDockerImage(imageName string, port string, close chan struct{}){
+func StartDockerImage(imageName string, port string, volume string, close chan struct{}){
 	log.Println("Inicialitzant el contenidor (D:",display," P:",port,")...")
 	//Obté docker API
 	dockerCli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
@@ -30,6 +31,13 @@ func StartDockerImage(imageName string, port string, close chan struct{}){
 	}, &container.HostConfig{
 		NetworkMode: container.NetworkMode("host"),
         AutoRemove:  true,
+        Mounts: []mount.Mount{
+            {
+                Type:   mount.TypeBind,
+                Source: volume,
+                Target: "/SHARED",
+            },
+        },
 	}, nil, nil, "")
 	if err != nil {
 		log.Println("Error en iniciar la imatge de docker", err)
