@@ -1,4 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { State } from 'src/app/State';
 import { Application } from 'src/app/models/application';
 
 @Component({
@@ -23,5 +24,9 @@ export class ContentNavigationComponent {
     let elem = vids[0] as HTMLVideoElement;
     if (elem.requestFullscreen)
       elem.requestFullscreen();
+  }
+
+  openFS(){
+    if(this.openApps.length>0) State.openFS=true;
   }
 }

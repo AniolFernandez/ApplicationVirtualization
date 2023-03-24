@@ -6,7 +6,7 @@
     </div>
     <div class="tools">
         <span class="vr"></span>
-        <img src="/assets/img/folder.svg" id="open-fs" (click)="openFullscreen()"/>
-        <img src="/assets/img/fullscreen.svg" id="toggle-fullscreen" (click)="openFullscreen()"/>
+        <img [ngClass]="{'disabled': openApps.length==0}" src="/assets/img/folder.svg" id="open-fs" (click)="openFS()"/>
+        <img [ngClass]="{'disabled': openApps.length==0}" src="/assets/img/fullscreen.svg" id="toggle-fullscreen" (click)="openFullscreen()"/>
     </div>
 </nav>

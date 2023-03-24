@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, ViewChild, ElementRef } from '@angular/core';
 import { Application } from 'src/app/models/application';
-import { Globals } from 'src/app/Globals';
+import { State } from 'src/app/State';
 
 @Component({
   selector: 'app-content-container',
@@ -12,7 +12,7 @@ export class ContentContainerComponent {
   @Output() openAppEvent = new EventEmitter<Application>();
   @Output() closeAppEvent = new EventEmitter<Application>();
   @ViewChild('stream') streamElement!: ElementRef;
-  globals = Globals;
+  globals = State;
   constructor(){
     this.refresh();
     window.addEventListener('keydown', (e) => this.onKey(e, false));

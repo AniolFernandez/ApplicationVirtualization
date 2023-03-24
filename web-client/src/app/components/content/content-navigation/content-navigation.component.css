@@ -73,3 +73,11 @@ nav {
     filter: brightness(150%);
 }
 
+.disabled {
+    opacity: 0.2;
+}
+
+.disabled:hover{
+    all:unset!important;
+    opacity: 0.2 !important;
+}

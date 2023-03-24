@@ -7,6 +7,7 @@ import { PageContainerComponent } from './components/page-container/page-contain
 import { ContentContainerComponent } from './components/content/content-container/content-container.component';
 import { ContentNavigationComponent } from './components/content/content-navigation/content-navigation.component';
 import { ApplicationComponent } from './components/application/application.component';
+import { FsbrowserComponent } from './components/fsbrowser/fsbrowser.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { ApplicationComponent } from './components/application/application.compo
     PageContainerComponent,
     ContentContainerComponent,
     ContentNavigationComponent,
-    ApplicationComponent
+    ApplicationComponent,
+    FsbrowserComponent
   ],
   imports: [
     BrowserModule
