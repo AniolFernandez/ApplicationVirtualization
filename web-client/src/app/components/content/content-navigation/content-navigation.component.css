@@ -43,6 +43,7 @@ nav {
     background-color: var(--gray);
     border-radius: 10px;
     margin-left: 10px;
+    margin-right: 4px;
 }
 
 .tools{
@@ -57,12 +58,18 @@ nav {
 }
 
 
-#toggle-fullscreen{
+#toggle-fullscreen, #open-fs{
     cursor: pointer;
+    transition: .25s;
 }
 
-#toggle-fullscreen:hover{
+#toggle-fullscreen:hover,#open-fs:hover{
     filter: drop-shadow(0 0 10px rgba(0,0,0,0.3));
-    filter: brightness(95%);
+    filter: brightness(90%);
+    transform: scale(1.1);
+}
+
+#open-fs:hover{
+    filter: brightness(150%);
 }
 
