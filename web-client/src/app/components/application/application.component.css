@@ -21,6 +21,7 @@
     animation-fill-mode: forwards;
     animation-delay: var(--delay);
     display:flex;
+    transition: .25s;
 }
 
 .app > img, .selected-app > img {
