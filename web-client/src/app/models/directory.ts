@@ -1,13 +1,13 @@
 export class Directory {
     constructor(
-        public fullpath: String,
-        public parent: String,
+        public fullpath: string,
+        public parent: string,
         public files: File[],
     ) { }
 }
 export class File {
     constructor(
-        public name: String,
+        public name: string,
         public isFile: boolean,
     ) { }
 }

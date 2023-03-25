@@ -11,6 +11,13 @@ export class AppStream{
     private peerConnection!: RTCPeerConnection;
     public token: String = "";
 
+    private port = 8443;
+    private secure = "";
+
+    public getApi(){
+        return `http${this.secure}://${this.endpoint}:${this.port}`
+    }
+
     public closeConnection(){
         if(this.peerConnection)
             this.peerConnection.close();
@@ -43,7 +50,7 @@ export class AppStream{
     }
 
     private startConnection(){
-        this.socket= new WebSocket(`ws://${this.endpoint}:8443/ws`);
+        this.socket= new WebSocket(`ws${this.secure}://${this.endpoint}:${this.port}/ws`);
         const config = {
             iceServers: [
             {

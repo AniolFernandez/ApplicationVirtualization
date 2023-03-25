@@ -77,7 +77,7 @@ func DownloadFile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Creació del path complert del recurs
-	pathComplert := strings.Replace(ROOT + token + path + fitxer, "/../", "/./", -1)
+	pathComplert := _sanitizePath(ROOT + token + path + fitxer)
 	log.Println("Downloading: ",pathComplert)
 
 	//Servim el fitxer
@@ -114,12 +114,12 @@ func ListDirectory(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Falten paràmetres", http.StatusBadRequest)
 		return
 	}
+	if string(path[len(path)-1]) == "/" {
+		path = path[:len(path)-1]
+	}
 
 	//Creació del path complert del recurs a llistar
-	pathComplert := strings.Replace(ROOT + token + path, "/../", "/./", -1)
-	if string(pathComplert[len(pathComplert)-1]) != "/" {
-		pathComplert = pathComplert + "/"
-	}
+	pathComplert := _sanitizePath(ROOT + token + path)
 
 
 	//Obtenim els continguts del directori
@@ -137,8 +137,8 @@ func ListDirectory(w http.ResponseWriter, r *http.Request) {
 	}
 
 	dir := Directory{
-		Fullpath: "/SHARED"+path,
-		Parent:   strings.Replace(filepath.Dir(pathComplert), ROOT+token, "", 1),
+		Fullpath: _sanitizePath(path),
+		Parent:   filepath.Dir(path),
 		Files:    fileList,
 	}
 
@@ -149,3 +149,7 @@ func ListDirectory(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonBytes)
 }
 
+
+func _sanitizePath(path string) string{
+	return strings.Replace(strings.Replace(path, "../", "./", -1), "//", "/", -1)
+}

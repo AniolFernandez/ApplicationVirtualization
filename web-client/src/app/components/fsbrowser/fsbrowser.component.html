@@ -1,12 +1,12 @@
 <div id="fsmodal">
     <div id="fsexplorer">
-        <div id="header">Contingut de: <strong >{{directory ? directory.fullpath : 'Carregant...'}}</strong>
+        <div id="header"><ng-container *ngIf="directory">Contingut de: </ng-container> <strong>{{directory ? '/SHARED'+directory.fullpath : 'Carregant...'}}</strong>
             <img src="/assets/img/cross.svg" id="close" (click)="close()"/>
         </div>
         <div id="content">
             <div id="scrolleable" *ngIf="directory">
-                <div *ngIf="directory.parent" class="back" (click)="openDir(directory.parent)"><img src="/assets/img/back.svg"/><strong>Tornar al directori anterior</strong></div>
-                <div *ngFor="let file of directory.files" (click)="file.isFile? downloadFile(file.name) : openDir(file.name)">
+                <div *ngIf="directory.fullpath && directory.fullpath!='/'" class="back" (click)="fetchDirectoryData(directory.parent)"><img src="/assets/img/back.svg"/><strong>Tornar al directori anterior</strong></div>
+                <div *ngFor="let file of directory.files" (click)="file.isFile? downloadFile(file.name) : fetchDirectoryData(file.name, false)">
                     <img [src]="file.isFile ? '/assets/img/file.svg' : '/assets/img/folder.svg'"/> {{file.name}}
                 </div>
             </div>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Directory, File } from 'src/app/models/directory';
+import { Directory } from 'src/app/models/directory';
 import { State } from 'src/app/State';
 
 @Component({
@@ -9,34 +9,36 @@ import { State } from 'src/app/State';
 })
 export class FsbrowserComponent {
 
-  public directory: Directory = {
-    fullpath: "/SHARED",
-    parent: "pako",
-    files: [
-      {
-        name:"This is a file",
-        isFile: true
-      },
-      {
-        name:"This is a directory",
-        isFile: false
-      },
-      {
-        name:"This is another file",
-        isFile: true
-      }
-    ]
+  public directory: Directory | null = null;
+
+  constructor(){
+    if(!State.openAppsStreams[State.activeApp!.name].token){
+      this.close();
+      return;
+    }
+    this.fetchDirectoryData();
   }
 
   downloadFile(file: String){
     alert("descarregar "+file)
   }
 
-  openDir(dir: String){
-    alert("obrir "+dir)
-  }
-
   close(){
     State.openFS=false;
+  }
+
+  fetchDirectoryData(dir: String="", fullpath: boolean=true){
+    if(!fullpath) dir = this.directory!.fullpath+"/"+dir;
+    this.directory=null; //Activa l'animació
+    var api = State.openAppsStreams[State.activeApp!.name].getApi();
+    fetch(`${api}/list?token=${State.openAppsStreams[State.activeApp!.name].token}&path=${dir}/`)
+    .then(response => response.json())
+    .then(data => {
+      this.directory = data;
+    })
+    .catch(error => {
+      this.close();
+      alert(error);
+    });
   }
 }
