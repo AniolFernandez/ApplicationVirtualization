@@ -9,6 +9,7 @@ export class AppStream{
     public stream?: MediaStream;
     private socket!: WebSocket;
     private peerConnection!: RTCPeerConnection;
+    public token: String = "";
 
     public closeConnection(){
         if(this.peerConnection)
@@ -68,7 +69,10 @@ export class AppStream{
                 console.log('failed to parse msg');
                 return;
             }
-            if (obj.candidate) {
+            if (obj.token){
+                this.token = obj.token;
+            }
+            else if (obj.candidate) {
                 this.peerConnection.addIceCandidate(obj);
             } else {
                 obj = JSON.parse(atob(obj));
