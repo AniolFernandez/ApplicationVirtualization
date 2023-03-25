@@ -54,6 +54,22 @@ img {
     overflow-x: hidden;
 }
 
+
+#content::-webkit-scrollbar {
+    width: 15px;
+}
+
+#content::-webkit-scrollbar-thumb {
+    background: var(--gray); 
+    border: 3px  var(--soft-gray) solid;
+    border-right: 3px var(--soft-gray) solid;
+    border-radius: 30px;
+}
+
+#content::-webkit-scrollbar-thumb:hover {
+    background: var(--gray); 
+}
+
 #scrolleable{
     height: 100%;
     width: 100%;

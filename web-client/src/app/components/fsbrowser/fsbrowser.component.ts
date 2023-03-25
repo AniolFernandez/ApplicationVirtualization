@@ -19,10 +19,6 @@ export class FsbrowserComponent {
     this.fetchDirectoryData();
   }
 
-  downloadFile(file: String){
-    alert("descarregar "+file)
-  }
-
   close(){
     State.openFS=false;
   }
@@ -30,7 +26,7 @@ export class FsbrowserComponent {
   fetchDirectoryData(dir: String="", fullpath: boolean=true){
     if(!fullpath) dir = this.directory!.fullpath+"/"+dir;
     this.directory=null; //Activa l'animació
-    var api = State.openAppsStreams[State.activeApp!.name].getApi();
+    const api = State.openAppsStreams[State.activeApp!.name].getApi();
     fetch(`${api}/list?token=${State.openAppsStreams[State.activeApp!.name].token}&path=${dir}/`)
     .then(response => response.json())
     .then(data => {
@@ -40,5 +36,17 @@ export class FsbrowserComponent {
       this.close();
       alert(error);
     });
+  }
+
+  downloadFile(file: String){
+    const a = document.createElement('a');
+    const api = State.openAppsStreams[State.activeApp!.name].getApi();
+    const token = State.openAppsStreams[State.activeApp!.name].token;
+    const path = this.directory!.fullpath + "/";
+    a.href = `${api}/download?token=${token}&path=${path}&file=${file}`;
+    a.target="_blank";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   }
 }
