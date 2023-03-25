@@ -1,17 +1,31 @@
 package main
 
 import (
+	"log"
+	"strings"
 	"os"
 	"os/exec"
 	"net/http"
-	"log"
-	"strings"
+	"io/ioutil"
     "crypto/rand"
 	"crypto/sha256"
     "encoding/hex"
+	"encoding/json"
+	"path/filepath"
 )
 
 const ROOT = "/tmp/appvirt/"
+
+type Directory struct {
+	Fullpath string `json:"fullpath"`
+	Parent string `json:"parent"`
+	Files []File `json:"files"`
+}
+	
+type File struct {
+	Name string `json:"name"`
+	IsFile bool `json:"isFile"`
+}
 
 //Genera bytes aleatoris per a codificar l'accés a fitxers i assegurar-nos que només qui ha accedir a la sessió podrà accedir al dir
 func _genRandomBytes() string {
@@ -50,7 +64,8 @@ const PARAMETRE_FITXER = "file"
 const PARAMETRE_PATH = "path"
 const PARAMETRE_TOKEN = "token"
 
-
+//Descarrega el fitxer d'un token i path donat.
+//Exemple de crida: http://localhost/download?token=xxxxxxxxxxx&path=pathdelrecurs&file=nomdelrecurs
 func DownloadFile(w http.ResponseWriter, r *http.Request) {
 	//Obtenció dels paràmetres i validació
 	token := r.URL.Query().Get(PARAMETRE_TOKEN)
@@ -86,3 +101,51 @@ func DownloadFile(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Disposition", "attachment; filename="+fitxer)
 	http.ServeContent(w, r, fitxer, fileInfo.ModTime(), file)
 }
+
+
+
+//Llista el contingut d'un token i path donat.
+//Exemple de crida: http://localhost/list?token=xxxxxxxxxxx&path=pathdelrecurs
+func ListDirectory(w http.ResponseWriter, r *http.Request) {
+	//Obtenció dels paràmetres i validació
+	token := r.URL.Query().Get(PARAMETRE_TOKEN)
+	path := r.URL.Query().Get(PARAMETRE_PATH)
+	if path == "" || token == "" {
+		http.Error(w, "Falten paràmetres", http.StatusBadRequest)
+		return
+	}
+
+	//Creació del path complert del recurs a llistar
+	pathComplert := strings.Replace(ROOT + token + path, "/../", "/./", -1)
+	if string(pathComplert[len(pathComplert)-1]) != "/" {
+		pathComplert = pathComplert + "/"
+	}
+
+
+	//Obtenim els continguts del directori
+	files, err := ioutil.ReadDir(pathComplert)
+	if err != nil {
+		log.Println("Error en llistar dir:",err)
+	}
+
+	var fileList = []File{}
+	for _, file := range files {
+		fileList = append(fileList, File{
+			Name:   file.Name(),
+			IsFile: !file.IsDir(),
+		})
+	}
+
+	dir := Directory{
+		Fullpath: "/SHARED"+path,
+		Parent:   strings.Replace(filepath.Dir(pathComplert), ROOT+token, "", 1),
+		Files:    fileList,
+	}
+
+
+	//Retorn del resultat
+	jsonBytes, _ := json.Marshal(dir)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonBytes)
+}
+
