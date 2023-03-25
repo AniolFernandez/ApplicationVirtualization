@@ -1,9 +1,11 @@
 package main
 
 import (
+    "fmt"
 	"log"
 	"net/http"
 //	"encoding/json"
+    "encoding/base64"
     "github.com/gorilla/websocket"
 )
 
@@ -57,7 +59,8 @@ func SocketHandler(w http.ResponseWriter, r *http.Request) {
     
     //Inici de la imatge de docker
     dockerStopSignal := make(chan struct{}) //Canal d'ordre de finalització de docker
-    _, fullPath := InitializeDirectory()
+    token, fullPath := InitializeDirectory()
+    socket.WriteMessage(websocket.TextMessage, []byte(base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("{\"token\":\"%s\"}", token)))))
     defer close(dockerStopSignal)
     defer DeleteDirectory(fullPath)
     go StartDockerImage("appvirt", portSocket, fullPath, dockerStopSignal)
