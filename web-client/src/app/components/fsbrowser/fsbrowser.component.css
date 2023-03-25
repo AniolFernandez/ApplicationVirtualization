@@ -59,7 +59,7 @@ img {
     width: 100%;
 }
 
-.item{
+#scrolleable > div {
     width: calc(100% - 20px);
     height: 30px;
     display: flex;
@@ -73,10 +73,7 @@ img {
     transition: .25s;
 }
 
-.back{
-    font-weight: bold;
-}
 
-.item:hover{
+#scrolleable > div:hover{
     filter: brightness(90%);
 }

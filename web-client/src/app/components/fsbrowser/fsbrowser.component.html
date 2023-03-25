@@ -1,27 +1,14 @@
 <div id="fsmodal">
     <div id="fsexplorer">
-        <div id="header">Contingut de: <strong>/SHARED</strong>
+        <div id="header">Contingut de: <strong>{{directory.fullpath}}</strong>
             <img src="/assets/img/cross.svg" id="close" (click)="close()"/>
         </div>
         <div id="content">
             <div id="scrolleable">
-                <div class="item back"><img src="/assets/img/back.svg"/> Tornar enrere</div>
-                <div class="item"><img src="/assets/img/folder.svg"/> Aixo es un item</div>
-                <div class="item"><img src="/assets/img/file.svg"/> Aixo es un item</div>
-                <div class="item"><img src="/assets/img/folder.svg"/> Aixo es un item</div>
-                <div class="item"><img src="/assets/img/file.svg"/> Aixo es un item</div>
-                <div class="item"><img src="/assets/img/folder.svg"/> Aixo es un item</div>
-                <div class="item"><img src="/assets/img/file.svg"/> Aixo es un item</div>
-                <div class="item"><img src="/assets/img/folder.svg"/> Aixo es un item</div>
-                <div class="item"><img src="/assets/img/file.svg"/> Aixo es un item</div>
-                <div class="item"><img src="/assets/img/folder.svg"/> Aixo es un item</div>
-                <div class="item"><img src="/assets/img/file.svg"/> Aixo es un item</div>
-                <div class="item"><img src="/assets/img/folder.svg"/> Aixo es un item</div>
-                <div class="item"><img src="/assets/img/file.svg"/> Aixo es un item</div>
-                <div class="item"><img src="/assets/img/folder.svg"/> Aixo es un item</div>
-                <div class="item"><img src="/assets/img/file.svg"/> Aixo es un item</div>
-                <div class="item"><img src="/assets/img/folder.svg"/> Aixo es un item</div>
-                <div class="item"><img src="/assets/img/file.svg"/> Aixo es un item</div>
+                <div *ngIf="directory.parent" class="back" (click)="openDir(directory.parent)"><img src="/assets/img/back.svg"/><strong>Tornar al directori anterior</strong></div>
+                <div *ngFor="let file of directory.files" (click)="file.isFile? downloadFile(file.name) : openDir(file.name)">
+                    <img [src]="file.isFile ? '/assets/img/file.svg' : '/assets/img/folder.svg'"/> {{file.name}}
+                </div>
             </div>
         </div>
     </div>

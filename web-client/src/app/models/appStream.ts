@@ -42,7 +42,7 @@ export class AppStream{
     }
 
     private startConnection(){
-        this.socket= new WebSocket(`ws://${this.endpoint}:8443/`);
+        this.socket= new WebSocket(`ws://${this.endpoint}:8443/ws`);
         const config = {
             iceServers: [
             {
