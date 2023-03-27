@@ -12,6 +12,7 @@
             </div>
             <div *ngIf="!directory" class="loader"></div>
         </div>
+        <img *ngIf="uploading" class="uploadinganim" src="/assets/img/uploading.gif"/>
         <button (click)="uploadFile()">
             Pujar fitxer
             <img src="/assets/img/upload.svg"/>

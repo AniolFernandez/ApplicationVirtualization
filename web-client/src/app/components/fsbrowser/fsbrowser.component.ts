@@ -50,6 +50,8 @@ export class FsbrowserComponent {
     a.remove();
   }
 
+  public uploading: boolean = false;
+
   uploadFile() {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
@@ -61,12 +63,14 @@ export class FsbrowserComponent {
       const token = State.openAppsStreams[State.activeApp!.name].token;
       const path = this.directory!.fullpath + "/";
       formData.append('file', file);
+      this.uploading=true;
       fetch(`${api}/upload?token=${token}&path=${path}`, {
         method: 'POST',
         body: formData
       })
         .then(() => this.fetchDirectoryData(this.directory!.fullpath + "/"))
-        .catch(error => alert(error));
+        .catch(error => alert(error))
+        .finally(()=>this.uploading=false);
     });
     fileInput.click();
   }
