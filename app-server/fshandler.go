@@ -103,6 +103,50 @@ func DownloadFile(w http.ResponseWriter, r *http.Request) {
 }
 
 
+//Puja el fitxer d'un token i path donat.
+//Exemple de crida: http://localhost/upload?token=xxxxxxxxxxx&path=pathdelrecurs
+func UploadFile(w http.ResponseWriter, r *http.Request) {
+	//Obtenció dels paràmetres i validació
+	token := r.URL.Query().Get(PARAMETRE_TOKEN)
+	path := r.URL.Query().Get(PARAMETRE_PATH)
+	if path == "" || token == "" {
+		http.Error(w, "Falten paràmetres", http.StatusBadRequest)
+		return
+	}
+
+	//Limitació per mida
+    err := r.ParseMultipartForm(10 << 20) // Limit de mida del fitxer: 10MB
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    //Llegim el fitxer del formulari
+    file, handler, err := r.FormFile("file")
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+    defer file.Close()
+
+
+    // Guardem el fitxer
+	sanitizedPath := _sanitizePath(ROOT + token + path)
+    filename := filepath.Join(sanitizedPath, handler.Filename)
+    data, err := ioutil.ReadAll(file)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+    err = ioutil.WriteFile(filename, data, 0644)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+	exec.Command("chown", "-R", "1000:1000", sanitizedPath).Run()
+}
+
+
 
 //Llista el contingut d'un token i path donat.
 //Exemple de crida: http://localhost/list?token=xxxxxxxxxxx&path=pathdelrecurs

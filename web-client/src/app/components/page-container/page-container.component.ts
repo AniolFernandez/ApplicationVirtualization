@@ -10,7 +10,7 @@ import { AppStream } from 'src/app/models/appStream';
 })
 export class PageContainerComponent {
   @Input() asideActive: boolean = true;
-  public globals = State;
+  public state = State;
 
   openApp(app: Application){
     if(!app.selected){

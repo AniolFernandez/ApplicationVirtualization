@@ -2,4 +2,4 @@
     <app-aside [asideActive]=asideActive (openAppEvent)="openApp($event)"></app-aside>
     <app-content-container [asideActive]=asideActive (openAppEvent)="openApp($event)" (closeAppEvent)="closeApp($event)"></app-content-container>
 </div>
-<app-fsbrowser *ngIf="globals.openFS"></app-fsbrowser>
+<app-fsbrowser  *ngIf="state.openFS"></app-fsbrowser>

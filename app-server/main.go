@@ -30,6 +30,7 @@ func main() {
     InitializeVolumes()
     http.HandleFunc("/ws", SocketHandler)
     http.HandleFunc("/download", DownloadFile)
+    http.HandleFunc("/upload", UploadFile)
     http.HandleFunc("/list", ListDirectory)
     cors := allowCors(http.DefaultServeMux)
     //log.Fatal(http.ListenAndServeTLS("0.0.0.0:8443", "cert.pem", "key.pem", cors))
