@@ -15,7 +15,7 @@ export class PageContainerComponent {
   openApp(app: Application){
     if(!app.selected){
       State.openApps.push(app);
-      State.openAppsStreams[app.name] = new AppStream("192.168.1.67", () => this.closeApp(app));
+      State.openAppsStreams[app.name] = new AppStream("192.168.56.101", () => this.closeApp(app));
     }
     if(State.activeApp){
       State.activeApp.active=false;

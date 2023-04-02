@@ -1,0 +1,34 @@
+version: '3'
+services:
+  #Servidor de BDD local. 
+  mysql:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: appvirt
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    command: --bind-address=127.0.0.1
+
+  #WebServer
+  webserver:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: localhost
+      DB_USER: admin
+      DB_PASSWORD: admin
+      DB_DATABASE: appvirt
+    depends_on:
+      - mysql
+
+volumes:
+  mysql-data:
