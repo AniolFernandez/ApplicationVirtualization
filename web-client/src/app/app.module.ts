@@ -8,6 +8,7 @@ import { ContentContainerComponent } from './components/content/content-containe
 import { ContentNavigationComponent } from './components/content/content-navigation/content-navigation.component';
 import { ApplicationComponent } from './components/application/application.component';
 import { FsbrowserComponent } from './components/fsbrowser/fsbrowser.component';
+import { MaterialsModule } from './materials.module';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { FsbrowserComponent } from './components/fsbrowser/fsbrowser.component';
     FsbrowserComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    MaterialsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,57 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+$mat-primary: (
+  main: #8120fd,
+  lighter: #d9bcfe,
+  darker: #6413fc,
+  200: #8120fd, // For slide toggle,
+  contrast : (
+    main: #ffffff,
+    lighter: #242424,
+    darker: #ffffff,
+  )
+);
+
+$mat-accent: (
+  main: #d9d9d9,
+  lighter: #f4f4f4,
+  darker: #cacaca,
+  200: #d9d9d9, // For slide toggle,
+  contrast : (
+    main: #242424,
+    lighter: #242424,
+    darker: #242424,
+  )
+);
+$theme-accent: mat.define-palette($mat-accent, main, lighter, darker);
+
+$web-client-primary: mat.define-palette($mat-primary, main, lighter, darker);
+$web-client-accent: mat.define-palette($mat-accent, main, lighter, darker);
+
+// The warn palette is optional (defaults to red).
+$web-client-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$web-client-theme: mat.define-light-theme((
+  color: (
+    primary: $web-client-primary,
+    accent: $web-client-accent,
+    warn: $web-client-warn,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($web-client-theme);
+
