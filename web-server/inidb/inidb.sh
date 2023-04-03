@@ -2,8 +2,8 @@
 
 sudo apt-get install mysql-client-core-8.0 -y
 
-MYSQL_USER="admin"
-MYSQL_PASSWORD="admin"
+MYSQL_USER="root"
+MYSQL_PASSWORD="root"
 MYSQL_HOST="127.0.0.1"
 SQL_FILE="ini.sql"
 
