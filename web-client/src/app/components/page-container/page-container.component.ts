@@ -9,7 +9,6 @@ import { AppStream } from 'src/app/models/appStream';
   styleUrls: ['./page-container.component.css']
 })
 export class PageContainerComponent {
-  @Input() asideActive: boolean = true;
   public state = State;
 
   openApp(app: Application){

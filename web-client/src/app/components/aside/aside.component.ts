@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { State } from 'src/app/State';
 import { Application } from 'src/app/models/application';
 import { Category } from 'src/app/models/category';
 
@@ -8,7 +9,7 @@ import { Category } from 'src/app/models/category';
   styleUrls: ['./aside.component.css']
 })
 export class AsideComponent {
-  @Input() asideActive: boolean = true;
+  state = State;
   @Output() openAppEvent = new EventEmitter<Application>();
   public categories: Category[];
   public loaded: boolean;

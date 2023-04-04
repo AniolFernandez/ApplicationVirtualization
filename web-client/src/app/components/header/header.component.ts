@@ -1,4 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
+import { State } from 'src/app/State';
 
 @Component({
   selector: 'app-header',
@@ -7,12 +8,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 })
 export class HeaderComponent {
 
-  @Output() toggleAsideEvent = new EventEmitter<boolean>();
-
-  public asideActive: boolean = true;
-
   toggleAside(){
-    this.asideActive=!this.asideActive;
-    this.toggleAsideEvent.emit(this.asideActive);
+    State.asideOpen = !State.asideOpen;
   }
 }

@@ -7,9 +7,4 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = "web-client";
-
-  public asideActive: boolean = true;
-  toggleAside(enabled: boolean){
-    this.asideActive=enabled;
-  }
 }

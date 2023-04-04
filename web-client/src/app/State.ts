@@ -6,4 +6,5 @@ export class State {
     public static openApps: Application[] = [];
     public static openAppsStreams: { [name: string]: AppStream} = {};
     public static openFS: boolean = false;
+    public static asideOpen: boolean = true;
 }
