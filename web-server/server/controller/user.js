@@ -1,6 +1,5 @@
 const express = require('express');
-const connection = require('../db');
-
+const userService = require('../service/user')
 const router = express.Router();
 
 router.get('/', (req, res) => {
@@ -17,5 +16,16 @@ router.get('/', (req, res) => {
   });
   */
 });
+
+
+router.post('/login', (req, res) => {
+  try {
+    res.json(userService.login(req.body.username, req.body.password));
+  }
+  catch {
+    res.status(500).send('Error at login');
+  }
+});
+
 
 module.exports = router;
