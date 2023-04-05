@@ -13,5 +13,6 @@
         </mat-form-field>
         <button mat-raised-button color="primary" (click)="login()">Iniciar sessió</button>
         <button mat-raised-button color="accent" (click)="signup()">No tens compta? Registra't!</button>
+        <mat-progress-bar *ngIf="loading" class="loader" mode="indeterminate"></mat-progress-bar>
     </div>
 </div>
