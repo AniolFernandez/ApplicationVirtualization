@@ -1,0 +1,17 @@
+<div class="container">
+    <div class="loginForm">
+        <h1>Iniciar sessió</h1>
+        <mat-form-field>
+            <mat-label>Usuari</mat-label>
+            <input matInput placeholder="Introdueix el teu usuari" [(ngModel)]="loginData.username">
+            <mat-icon matSuffix>person</mat-icon>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Contrasenya</mat-label>
+            <input matInput type="password" placeholder="Introdueix la teva contrasenya" [(ngModel)]="loginData.password">
+            <mat-icon matSuffix>lock</mat-icon>
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="login()">Iniciar sessió</button>
+        <button mat-raised-button color="accent" (click)="signup()">No tens compta? Registra't!</button>
+    </div>
+</div>

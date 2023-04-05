@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ApiInterceptor } from './api';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { AsideComponent } from './components/aside/aside.component';
@@ -9,6 +12,9 @@ import { ContentNavigationComponent } from './components/content/content-navigat
 import { ApplicationComponent } from './components/application/application.component';
 import { FsbrowserComponent } from './components/fsbrowser/fsbrowser.component';
 import { MaterialsModule } from './materials.module';
+import { AppRoutingModule } from './app-routing.module';
+import { HttpClientModule } from '@angular/common/http';
+import { LoginComponent } from './components/login/login.component';
 
 @NgModule({
   declarations: [
@@ -19,13 +25,19 @@ import { MaterialsModule } from './materials.module';
     ContentContainerComponent,
     ContentNavigationComponent,
     ApplicationComponent,
-    FsbrowserComponent
+    FsbrowserComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
-    MaterialsModule
+    BrowserAnimationsModule,
+    MaterialsModule,
+    AppRoutingModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
