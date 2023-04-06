@@ -32,7 +32,7 @@ DROP TABLE IF EXISTS `appvirt`.`user` ;
 CREATE TABLE IF NOT EXISTS `appvirt`.`user` (
   `username` VARCHAR(16) NOT NULL,
   `email` VARCHAR(255) NULL,
-  `password` VARCHAR(32) NOT NULL,
+  `password` VARCHAR(128) NOT NULL,
   `create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `group_id` INT NULL,
   PRIMARY KEY (`username`),

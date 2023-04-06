@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { State } from 'src/app/State';
 import { ApiInterceptor } from 'src/app/services/api';
 import { SnackbarService } from 'src/app/services/snackbar.service';
@@ -10,7 +11,7 @@ import { SnackbarService } from 'src/app/services/snackbar.service';
   styleUrls: ['./signup.component.css']
 })
 export class SignupComponent {
-  constructor(private http: HttpClient, private snackBar: SnackbarService) { }
+  constructor(private http: HttpClient, private snackBar: SnackbarService, private router: Router) { }
 
   public loading: boolean = false;
 
@@ -41,6 +42,7 @@ export class SignupComponent {
           ApiInterceptor.saveToken(msg.token);
           State.sessionStatusChanged();
           this.snackBar.Show("✅ Registrat correctament. Sessió iniciada.");
+          this.router.navigate(["/"]);
         }
       },
       () => { //Error en la connexió

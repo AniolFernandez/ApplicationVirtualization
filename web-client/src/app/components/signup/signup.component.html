@@ -5,6 +5,7 @@
             <mat-label>Usuari</mat-label>
             <input matInput placeholder="Introdueix el nom d'usuari"
                 required name="username"
+                maxlength="16"
                 [(ngModel)]="signupData.username">
             <mat-icon matSuffix>person</mat-icon>
         </mat-form-field>
@@ -15,6 +16,7 @@
             <mat-label>Correu electrònic</mat-label>
             <input matInput type="email" placeholder="Introdueix el teu correu electrònic"
                 required
+                maxlength="255"
                 [(ngModel)]="signupData.email">
             <mat-icon matSuffix>email</mat-icon>
         </mat-form-field>
