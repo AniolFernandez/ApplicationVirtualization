@@ -16,4 +16,10 @@ export class State {
         else
           this.username="";
     };
+    public static logout(){
+        if(this.openApps.length==0 || confirm("Tens aplicacions obertes. Segur que vols tancar la sessió?")){
+            localStorage.removeItem('token');
+            window.location.href = window.location.origin;
+        }
+    }
 }

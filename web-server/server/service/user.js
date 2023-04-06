@@ -1,6 +1,6 @@
 const db = require('../db');
 const jwt = require('../security/jwt')
-const adminUser = process.env.ADMIN_USER || 'admin';
+const adminUser = 'admin';
 const adminPass = process.env.ADMIN_PW || 'admin';
 
 module.exports = {

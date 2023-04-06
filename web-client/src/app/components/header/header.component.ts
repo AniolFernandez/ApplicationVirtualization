@@ -21,4 +21,8 @@ export class HeaderComponent {
   main() {
     this.router.navigate(['/']);
   }
+
+  openConfig(){
+    alert("no implementat");
+  }
 }
