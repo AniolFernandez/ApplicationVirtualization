@@ -6,7 +6,7 @@
     </div>
     <span class="spacer"></span>
     <a *ngIf="!state.username" routerLink="/login" color="white" mat-button>Iniciar sessió</a>
-    <button *ngIf="state.username" mat-button color="white" [matMenuTriggerFor]="menu">{{state.username}}</button>
+    <button *ngIf="state.username" class="username" mat-button color="white" [matMenuTriggerFor]="menu">{{state.username}}</button>
     <mat-menu #menu="matMenu">
         <button *ngIf="state.username == 'admin'" mat-menu-item (click)="openConfig()">Obrir la configuració<mat-icon>settings</mat-icon></button>
         <mat-divider *ngIf="state.username == 'admin'"></mat-divider>
