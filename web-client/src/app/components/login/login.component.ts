@@ -25,16 +25,19 @@ export class LoginComponent {
   login() {
     this.loading = true;
     this.http.post('/user/login', this.loginData).subscribe(
-      token => {
+      (msg: any) => {
         this.loading = false;
-        ApiInterceptor.saveToken(token.toString());
-        State.sessionStatusChanged();
-        this.snackBar.Show("✅ Sessió iniciada.");
-        this.router.navigate(["/"]);
+        if (msg.token) {//Login correcte
+          ApiInterceptor.saveToken(msg.token.toString());
+          State.sessionStatusChanged();
+          this.snackBar.Show("✅ Sessió iniciada.");
+          this.router.navigate(["/"]);
+        }
+        else this.snackBar.Show("❌ Credencials incorrectes");
       },
       () => { //Login fallit
         this.loading = false;
-        this.snackBar.Show("❌ Credencials incorrectes");
+        this.snackBar.Show("❌ No hi ha connexió amb el servidor");
       }
     );
   }

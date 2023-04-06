@@ -6,10 +6,10 @@ const email_regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 //Login dels usuaris
 router.post('/login', async (req, res) => {
   try {
-    res.json(await userService.login(req.body.username, req.body.password));
+    res.json({token:await userService.login(req.body.username, req.body.password)});
   }
   catch {
-    res.status(500).send('Error at login');
+    res.json({error:"Error at login."});
   }
 });
 
