@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { State } from 'src/app/State';
-import { ApiInterceptor } from 'src/app/api';
+import { ApiInterceptor } from 'src/app/services/api';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 
 @Component({

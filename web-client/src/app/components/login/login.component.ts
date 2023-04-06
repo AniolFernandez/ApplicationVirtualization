@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ApiInterceptor } from 'src/app/api';
+import { ApiInterceptor } from 'src/app/services/api';
 import { Router } from '@angular/router';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { State } from 'src/app/State';
