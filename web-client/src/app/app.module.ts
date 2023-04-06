@@ -16,6 +16,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginComponent } from './components/login/login.component';
 import { SignupComponent } from './components/signup/signup.component';
+import { SnackbarService } from './services/snackbar.service';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,7 @@ import { SignupComponent } from './components/signup/signup.component';
     HttpClientModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true }, SnackbarService
   ],
   bootstrap: [AppComponent]
 })

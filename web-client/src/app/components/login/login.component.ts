@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApiInterceptor } from 'src/app/api';
 import { Router } from '@angular/router';
+import { SnackbarService } from 'src/app/services/snackbar.service';
+import { State } from 'src/app/State';
 
 @Component({
   selector: 'app-login',
@@ -10,7 +12,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  constructor(private http: HttpClient, private snackBar: MatSnackBar, private router: Router) { }
+  constructor(private http: HttpClient, private snackBar: SnackbarService, private router: Router) { }
 
   public loading: boolean = false;
 
@@ -26,14 +28,18 @@ export class LoginComponent {
       token => {
         this.loading = false;
         ApiInterceptor.saveToken(token.toString());
+        State.sessionStatusChanged();
+        this.snackBar.Show("✅ Sessió iniciada.");
+        this.router.navigate(["/"]);
       },
-      () => {
+      () => { //Login fallit
         this.loading = false;
-        this.snackBar.open("❌ Credencials incorrectes", "Tancar", { duration: 3000 });
+        this.snackBar.Show("❌ Credencials incorrectes");
       }
     );
   }
 
+  //Navegació cap al registre
   signup() {
     this.router.navigate(["/signup"]);
   }

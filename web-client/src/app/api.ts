@@ -26,6 +26,5 @@ export class ApiInterceptor implements HttpInterceptor {
     //Utilitzat per a realitzar el login i settingn del token
     public static saveToken(token: string){
         localStorage.setItem('token', token);
-        window.location.href = window.location.origin; //Força el refresh de tot
     }
 }

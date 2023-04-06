@@ -5,6 +5,6 @@
         <h1>VIRTUALITZADOR D'APLICACIONS</h1>
     </div>
     <span class="spacer"></span>
-    <a *ngIf="!username" routerLink="/login" color="white" mat-button>Iniciar sessió</a>
-    <button *ngIf="username" mat-button color="white">{{username}}</button>
+    <a *ngIf="!state.username" routerLink="/login" color="white" mat-button>Iniciar sessió</a>
+    <button *ngIf="state.username" mat-button color="white">{{state.username}}</button>
 </header>

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { State } from 'src/app/State';
-import jwt_decode from 'jwt-decode';
 import { Router } from '@angular/router';
 
 @Component({
@@ -10,14 +9,9 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent {
 
-  constructor(private router: Router) {
-    let token = localStorage.getItem('token');
-    if (token) {
-      this.username = jwt_decode<{ user: string }>(token)["user"];
-    }
-  }
+  constructor(private router: Router) {State.sessionStatusChanged();}
 
-  public username: string = "";
+  public state = State;
 
   toggleAside() {
     State.asideOpen = !State.asideOpen;

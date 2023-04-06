@@ -1,0 +1,40 @@
+<div class="container">
+    <div class="signupForm">
+        <h1>Registre</h1>
+        <mat-form-field>
+            <mat-label>Usuari</mat-label>
+            <input matInput placeholder="Introdueix el nom d'usuari"
+                required name="username"
+                [(ngModel)]="signupData.username">
+            <mat-icon matSuffix>person</mat-icon>
+        </mat-form-field>
+        
+        
+        <mat-form-field>
+            <small *ngIf="signupData.email && !isEmail(signupData.email)">Has d'introduïr un correu vàlid.</small>
+            <mat-label>Correu electrònic</mat-label>
+            <input matInput type="email" placeholder="Introdueix el teu correu electrònic"
+                required
+                [(ngModel)]="signupData.email">
+            <mat-icon matSuffix>email</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field>
+            <small *ngIf="signupData.password && signupData.password.length<8">Com a mínim ha de tenir 8 caràcters.</small>
+            <mat-label>Contrasenya</mat-label>
+            <input matInput type="password" placeholder="Introdueix la teva contrasenya"
+                required [(ngModel)]="signupData.password">
+            <mat-icon matSuffix>lock</mat-icon>
+        </mat-form-field>
+        
+        <mat-form-field>
+            <small *ngIf="signupData.password2 && signupData.password2 != signupData.password">Les contrasenyes no són iguals.</small>
+            <mat-label>Validació de contrasenya</mat-label>
+            <input matInput type="password" placeholder="Repeteix la contrasenya"
+                required [(ngModel)]="signupData.password2">
+            <mat-icon matSuffix>lock</mat-icon>
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="signup()">Registrar-me</button>
+        <mat-progress-bar *ngIf="loading" class="loader" mode="indeterminate"></mat-progress-bar>
+    </div>
+</div>
