@@ -63,8 +63,7 @@ module.exports = {
     //Obtenció llistat usuaris
     getUsers: async function () {
         const results = await new Promise((resolve, reject) => {
-            db.query(`SELECT username, email, DATE_FORMAT(create_time, \'%d/%m/%Y %H:%i:%s\') create_time, role.name role
-                      FROM user LEFT JOIN role ON role.id = user.role_id
+            db.query(`SELECT username, email, DATE_FORMAT(create_time, \'%d/%m/%Y %H:%i:%s\') create_time, role_id role
                       ORDER BY create_time DESC;`, (error, results) => {
                 if (error) {
                     console.error("Error al consultar la db: ", error);
@@ -81,5 +80,5 @@ module.exports = {
             createTime: result.create_time
           }));
         return users;
-    },
+    }
 }

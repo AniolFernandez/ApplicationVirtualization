@@ -4,6 +4,7 @@ const jwt = require('./security/jwt')
 const cors = require('cors');
 const bodyParser = require('body-parser')
 const usersRouter = require('./controller/user');
+const roleRouter = require('./controller/role');
 const port = process.env.PORT || 3000;
 
 //Configuració del servidor
@@ -15,6 +16,7 @@ const app = express()
 
 //ROUTER
 app.use('/user', usersRouter);
+app.use('/role', roleRouter);
 
 //Arranca el servidor web
 app.listen(port, () => console.log(`Server listening at http://localhost:${port}`));

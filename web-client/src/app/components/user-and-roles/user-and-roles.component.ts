@@ -2,6 +2,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component } from '@angular/core';
 import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import { Role } from 'src/app/models/role';
+import { RoleService } from 'src/app/services/role.service';
 
 @Component({
   selector: 'app-user-and-roles',
@@ -11,7 +12,18 @@ import { Role } from 'src/app/models/role';
 export class UserAndRolesComponent {
 
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
-  roles: Role[] = [{ id:1, name: 'Lemon' }, { id:2, name: 'Lime' }, { id: 3, name: 'Apple' }];
+  roles: Role[] = [];
+  rolesDic: any = {};
+  loading: boolean = false;
+
+  constructor(private roleService: RoleService){
+    this.loading = true;
+    roleService.getRoles((roles: any)=>{
+      this.loading = false;
+      this.rolesDic = roles;
+      this.roles = Object.values(roles);
+    })
+  }
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
