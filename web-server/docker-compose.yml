@@ -14,6 +14,14 @@ services:
       - db:/var/lib/mysql
     command: --bind-address=0.0.0.0 --default-authentication-plugin=mysql_native_password
 
+  #Docker Registry
+  registry:
+    image: registry:2
+    restart: always
+    network_mode: "host"
+    volumes:
+      - registry-data:/var/lib/registry
+
   #WebServer
   webserver:
     build:
@@ -31,3 +39,4 @@ services:
 
 volumes:
   db:
+  registry-data:
