@@ -58,5 +58,26 @@ module.exports = {
             });
         });
         return results.affectedRows == 1;
-    }
+    },
+
+    //Obtenció llistat usuaris
+    getUsers: async function () {
+        const results = await new Promise((resolve, reject) => {
+            db.query('SELECT username, email, create_time FROM user ORDER BY create_time DESC;', (error, results) => {
+                if (error) {
+                    cconsole.error("Error al consultar la db: ", error);
+                    reject('Error al consultar');
+                }
+                resolve(results);
+            });
+        });
+
+        const users = results.map(result => ({
+            username: result.username,
+            email: result.email,
+            group: 'none',
+            createTime: result.create_time
+          }));
+        return users;
+    },
 }

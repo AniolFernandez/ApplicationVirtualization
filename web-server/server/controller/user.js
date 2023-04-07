@@ -3,6 +3,19 @@ const userService = require('../service/user')
 const router = express.Router();
 const email_regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+//Obtenció del llistat d'usuaris
+router.get('/all', async (req, res) => {
+  try {
+    if(req.isAdmin){
+      res.json(await userService.getUsers());
+    }
+    else throw new Error("Unaothorized.")
+  }
+  catch {
+    res.json({error:"Unauthorized."});
+  }
+});
+
 //Login dels usuaris
 router.post('/login', async (req, res) => {
   try {

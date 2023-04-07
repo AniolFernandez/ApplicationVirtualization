@@ -17,7 +17,10 @@ const processToken = async (req, res, next) => {
             access_token = req.headers.authorization.split(' ')[1];
             req.access_token = access_token;
             const decoded = jwt.verify(access_token, secret);
-            if (decoded) req.authUser = decoded.user; //Assigna l'usuari a la request si aquesta està validada   
+            if (decoded) {
+                req.authUser = decoded.user; //Assigna l'usuari a la request si aquesta està validada
+                if(decoded.user=='admin') req.isAdmin=true; //Validació d'admin
+            } 
         }
     }
     catch(err){
