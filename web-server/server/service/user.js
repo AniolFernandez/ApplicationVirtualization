@@ -63,9 +63,11 @@ module.exports = {
     //Obtenció llistat usuaris
     getUsers: async function () {
         const results = await new Promise((resolve, reject) => {
-            db.query('SELECT username, email, create_time FROM user ORDER BY create_time DESC;', (error, results) => {
+            db.query(`SELECT username, email, DATE_FORMAT(create_time, \'%d/%m/%Y %H:%i:%s\') create_time, role.name role
+                      FROM user LEFT JOIN role ON role.id = user.role_id
+                      ORDER BY create_time DESC;`, (error, results) => {
                 if (error) {
-                    cconsole.error("Error al consultar la db: ", error);
+                    console.error("Error al consultar la db: ", error);
                     reject('Error al consultar');
                 }
                 resolve(results);
@@ -75,7 +77,7 @@ module.exports = {
         const users = results.map(result => ({
             username: result.username,
             email: result.email,
-            group: 'none',
+            role: result.role,
             createTime: result.create_time
           }));
         return users;

@@ -15,22 +15,23 @@
         </ng-container>
 
         <!-- Grup -->
-        <ng-container matColumnDef="group">
-            <th mat-header-cell *matHeaderCellDef> Grup </th>
-            <td mat-cell *matCellDef="let element"> {{element.group}} </td>
+        <ng-container matColumnDef="role">
+            <th mat-header-cell *matHeaderCellDef> Rol </th>
+            <td mat-cell *matCellDef="let element"> {{element.role}} </td>
         </ng-container>
 
         <!-- Data de creació -->
-        <ng-container matColumnDef="createdate">
+        <ng-container matColumnDef="createtime">
             <th mat-header-cell *matHeaderCellDef> Data de registre </th>
-            <td mat-cell *matCellDef="let element"> {{element.createdate}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.createTime}} </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-    <mat-progress-bar class="linload" mode="indeterminate"></mat-progress-bar>
-
+    <mat-progress-bar *ngIf="loading" class="linload" mode="indeterminate"></mat-progress-bar>
     <mat-paginator [pageSize]="10" showFirstLastButtons hidePageSize="true">
+        
     </mat-paginator>
+    <button mat-button class="refresh" (click)="getUsers()"><mat-icon>refresh</mat-icon>Tornar a carregar</button>
 </div>

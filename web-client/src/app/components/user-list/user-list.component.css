@@ -12,4 +12,11 @@ h2{
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 0 3px rgba(0,0,0,0.25);
+    position: relative;
+}
+
+.refresh{
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
 }

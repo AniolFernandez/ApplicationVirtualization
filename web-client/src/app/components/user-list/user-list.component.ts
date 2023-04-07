@@ -1,84 +1,44 @@
+import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { User } from 'src/app/models/user';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css']
 })
-export class UserListComponent implements AfterViewInit {
-  private users: User[] = [
-    {
-      username: 'johndoe',
-      email: 'johndoe@example.com',
-      group: 'Group A',
-      createdate: '2022-03-15T13:30:00.000Z'
-    },
-    {
-      username: 'janedoe',
-      email: 'janedoe@example.com',
-      group: 'Group B',
-      createdate: '2022-03-16T14:45:00.000Z'
-    },
-    {
-      username: 'bobsmith',
-      email: 'bobsmith@example.com',
-      group: 'Group C',
-      createdate: '2022-03-17T16:00:00.000Z'
-    },
-    {
-      username: 'alicejohnson',
-      email: 'alicejohnson@example.com',
-      group: 'Group A',
-      createdate: '2022-03-18T17:15:00.000Z'
-    },
-    {
-      username: 'mikesmith',
-      email: 'mikesmith@example.com',
-      group: 'Group B',
-      createdate: '2022-03-19T18:30:00.000Z'
-    },
-    {
-      username: 'janedoe2',
-      email: 'janedoe2@example.com',
-      group: 'Group C',
-      createdate: '2022-03-20T19:45:00.000Z'
-    },
-    {
-      username: 'johnsmith',
-      email: 'johnsmith@example.com',
-      group: 'Group A',
-      createdate: '2022-03-21T21:00:00.000Z'
-    },
-    {
-      username: 'sarahdoe',
-      email: 'sarahdoe@example.com',
-      group: 'Group B',
-      createdate: '2022-03-22T22:15:00.000Z'
-    },
-    {
-      username: 'robertjohnson',
-      email: 'robertjohnson@example.com',
-      group: 'Group C',
-      createdate: '2022-03-23T23:30:00.000Z'
-    },
-    {
-      username: 'janesmith',
-      email: 'janesmith@example.com',
-      group: 'Group A',
-      createdate: '2022-03-24T00:45:00.000Z'
-    }
-  ];
-
-  displayedColumns: string[] = ['username', 'email', 'group', 'createdate'];
+export class UserListComponent {
+  private users: User[] = [];
+  displayedColumns: string[] = ['username', 'email', 'role', 'createtime'];
   dataSource = new MatTableDataSource<User>(this.users);
+  public loading: boolean = false;
 
   @ViewChild(MatPaginator) paginator: MatPaginator | null = null;
 
-  ngAfterViewInit() {
+  constructor(private snackBar: SnackbarService, private http: HttpClient){
     this.dataSource.paginator = this.paginator;
+    this.getUsers();
+  }
+
+
+  //Crida enpoint obtenció d'usuaris
+  getUsers() {
+    this.loading = true;
+    this.http.get('/user/all').subscribe(
+      (msg: any) => {
+        this.loading = false;
+        this.users = msg;
+        this.dataSource = new MatTableDataSource<User>(this.users);
+      },
+      () => { //ha fallat la connexió
+        this.loading = false;
+        this.snackBar.Show("❌ No hi ha connexió amb el servidor");
+      }
+    );
+    
   }
 
 }
