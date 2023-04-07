@@ -9,7 +9,7 @@ router.get('/all', async (req, res) => {
     if(req.isAdmin){
       res.json(await userService.getUsers());
     }
-    else throw new Error("Unaothorized.")
+    else throw new Error("Unauthorized.")
   }
   catch {
     res.json({error:"Unauthorized."});
