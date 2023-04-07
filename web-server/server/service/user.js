@@ -64,6 +64,7 @@ module.exports = {
     getUsers: async function () {
         const results = await new Promise((resolve, reject) => {
             db.query(`SELECT username, email, DATE_FORMAT(create_time, \'%d/%m/%Y %H:%i:%s\') create_time, role_id role
+                      FROM user
                       ORDER BY create_time DESC;`, (error, results) => {
                 if (error) {
                     console.error("Error al consultar la db: ", error);
