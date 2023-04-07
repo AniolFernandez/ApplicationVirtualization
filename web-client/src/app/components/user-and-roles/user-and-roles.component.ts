@@ -21,7 +21,13 @@ export class UserAndRolesComponent {
     roleService.getRoles((roles: any)=>{
       this.loading = false;
       this.rolesDic = roles;
-      this.roles = Object.values(roles);
+      this.roles = [];
+      for (const [key, value] of Object.entries(roles)) {
+        this.roles.push({
+          id: parseInt(key),
+          name: value!.toString(),
+        })
+      }
     })
   }
 
@@ -30,10 +36,14 @@ export class UserAndRolesComponent {
 
     //Crida per afegir el rol
     if (value) {
-      this.roles.push({ id: 1, name: value });
+      this.loading= true;
+      this.roleService.addRole(value, (result: any)=>{
+        this.loading= false;
+        if(result) 
+          this.roles.push(result);
+      });
+      
     }
-
-    //Eliminem l'input
     event.chipInput!.clear();
   }
 
