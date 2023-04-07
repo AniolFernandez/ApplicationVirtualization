@@ -17,6 +17,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { LoginComponent } from './components/login/login.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { SnackbarService } from './services/snackbar.service';
+import { AdminPageComponent } from './components/admin-page/admin-page.component';
+import { UserListComponent } from './components/user-list/user-list.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { SnackbarService } from './services/snackbar.service';
     ApplicationComponent,
     FsbrowserComponent,
     LoginComponent,
-    SignupComponent
+    SignupComponent,
+    AdminPageComponent,
+    UserListComponent
   ],
   imports: [
     BrowserModule,

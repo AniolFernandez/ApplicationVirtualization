@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent {
 
-  constructor(private router: Router) {State.sessionStatusChanged();}
+  constructor(public router: Router) {State.sessionStatusChanged();}
 
   public state = State;
 
@@ -23,6 +23,6 @@ export class HeaderComponent {
   }
 
   openConfig(){
-    alert("no implementat");
+    this.router.navigate(['/config']);
   }
 }

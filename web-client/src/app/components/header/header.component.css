@@ -61,6 +61,23 @@ button{
     font-weight: bold !important;
 }
 
+.hidden{
+    opacity: 0;
+    animation: hiddeCompletly .25s forwards;
+}
+
+@keyframes hiddeCompletly{
+    0%{
+        visibility: visible;
+    }
+    99%{
+        visibility: visible;
+    }
+    100%{
+        visibility: hidden;
+    }
+}
+
 
 @media (max-width:750px) { 
     #logo > h1 {

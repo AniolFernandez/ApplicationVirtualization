@@ -9,6 +9,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
   exports: [
@@ -21,7 +24,10 @@ import { MatDividerModule } from '@angular/material/divider';
     MatSnackBarModule,
     MatProgressBarModule,
     MatMenuModule,
-    MatDividerModule
+    MatDividerModule,
+    MatTabsModule,
+    MatPaginatorModule,
+    MatTableModule
   ]
 })
 export class MaterialsModule { }

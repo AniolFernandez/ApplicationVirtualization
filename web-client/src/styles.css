@@ -48,6 +48,13 @@ img {
     user-select: none;
 }
 
+.linload{
+    position: sticky;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
+}
+
 @media (max-width:450px),(max-height:390px) { 
     aside, .content, #toggle-aside, .login{display: none !important;}
     .fallback-resolution{display: flex;}
