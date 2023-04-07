@@ -19,6 +19,7 @@ import { SignupComponent } from './components/signup/signup.component';
 import { SnackbarService } from './services/snackbar.service';
 import { AdminPageComponent } from './components/admin-page/admin-page.component';
 import { UserListComponent } from './components/user-list/user-list.component';
+import { UserAndRolesComponent } from './components/user-and-roles/user-and-roles.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { UserListComponent } from './components/user-list/user-list.component';
     LoginComponent,
     SignupComponent,
     AdminPageComponent,
-    UserListComponent
+    UserListComponent,
+    UserAndRolesComponent
   ],
   imports: [
     BrowserModule,

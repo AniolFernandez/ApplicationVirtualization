@@ -2,21 +2,20 @@ table {
     width: 100%;
 }
 
-h2{
-    margin-left: 10%;
-}
-
-.container{
-    width: 80%;
-    margin: 20px auto 100px auto;
+.container {
+    margin: 20px 20px 100px 20px;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 0 3px rgba(0,0,0,0.25);
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.25);
     position: relative;
 }
 
-.refresh{
+.refresh {
     position: absolute;
     bottom: 10px;
     left: 10px;
+}
+
+.nowarp{
+    white-space: nowrap !important;
 }

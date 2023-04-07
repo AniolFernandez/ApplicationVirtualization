@@ -2,4 +2,26 @@
     overflow-y: scroll;
     display: block;
     height: 100vh;
+    width: 80%;
+    margin: 0 auto 0 auto;
+    box-sizing: border-box;
+}
+
+::-webkit-details-marker {
+    display:none;
+}
+
+::-webkit-scrollbar {
+    width: 18px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gray); 
+    border: 7px  var(--soft-gray) solid;
+    border-right: 4px var(--soft-gray) solid;
+    border-radius: 30px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gray); 
 }

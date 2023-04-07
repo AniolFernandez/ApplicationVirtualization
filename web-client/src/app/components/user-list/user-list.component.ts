@@ -38,7 +38,10 @@ export class UserListComponent {
         this.snackBar.Show("❌ No hi ha connexió amb el servidor");
       }
     );
-    
+  }
+
+  changeRole(username: string, role: string){
+    alert(username+" "+role);
   }
 
 }
