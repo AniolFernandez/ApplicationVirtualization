@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { Role } from 'src/app/models/role';
 import { User } from 'src/app/models/user';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 
@@ -17,6 +18,7 @@ export class UserListComponent {
   public loading: boolean = false;
 
   @ViewChild(MatPaginator) paginator: MatPaginator | null = null;
+  @Input() roles: Role[] = [];
 
   constructor(private snackBar: SnackbarService, private http: HttpClient){
     this.dataSource.paginator = this.paginator;

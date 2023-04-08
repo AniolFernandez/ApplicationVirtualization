@@ -41,9 +41,22 @@ module.exports = {
                 resolve(results.affectedRows == 1);
             });
         });
-        if(ok)
+        if (ok)
             return id;
         else
             return null;
+    },
+
+    //Eliminar rol
+    deleteRoleById: async function (id) {
+        return await new Promise((resolve, reject) => {
+            db.query(`DELETE FROM role WHERE id = ?`, [id], (error, results) => {
+                if (error) {
+                    console.error("Error al eliminar el rol de la db: ", error);
+                    resolve(false);
+                }
+                resolve(results.affectedRows > 0);
+            });
+        });
     },
 }

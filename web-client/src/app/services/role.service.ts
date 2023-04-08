@@ -40,4 +40,22 @@ export class RoleService {
       }
     );
   }
+
+  //Eliminar rol
+  public delRole(id: number, callback: any) {
+    this.http.delete(`/role/${id}`).subscribe(
+      (msg: any) => {
+        if(msg.error){ //Error en el servidor
+          this.snackBar.Show(`❌ ${msg.error.toString()}`);
+          callback(null);
+        }
+        else //tot ok
+          callback(msg);
+      },
+      () => { //Error en la connexió
+        callback(null);
+        this.snackBar.Show(`❌ No hi ha connexió amb el servidor`);
+      }
+    );
+  }
 }

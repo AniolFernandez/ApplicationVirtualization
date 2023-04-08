@@ -16,9 +16,9 @@ export class UserAndRolesComponent {
   rolesDic: any = {};
   loading: boolean = false;
 
-  constructor(private roleService: RoleService){
+  constructor(private roleService: RoleService) {
     this.loading = true;
-    roleService.getRoles((roles: any)=>{
+    roleService.getRoles((roles: any) => {
       this.loading = false;
       this.rolesDic = roles;
       this.roles = [];
@@ -36,13 +36,13 @@ export class UserAndRolesComponent {
 
     //Crida per afegir el rol
     if (value) {
-      this.loading= true;
-      this.roleService.addRole(value, (result: any)=>{
-        this.loading= false;
-        if(result) 
+      this.loading = true;
+      this.roleService.addRole(value, (result: any) => {
+        this.loading = false;
+        if (result)
           this.roles.push(result);
       });
-      
+
     }
     event.chipInput!.clear();
   }
@@ -50,8 +50,15 @@ export class UserAndRolesComponent {
   remove(role: Role): void {
     const index = this.roles.indexOf(role);
 
+    //Crida per eliminar el rol
     if (index >= 0) {
-      this.roles.splice(index, 1);
+      this.loading = true;
+      this.roleService.delRole(role.id, (result: any) => {
+        this.loading = false;
+        if (result.success) {
+          this.roles.splice(index, 1);
+        }
+      });
     }
   }
 
