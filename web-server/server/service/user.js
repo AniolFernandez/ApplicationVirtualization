@@ -81,5 +81,18 @@ module.exports = {
             createTime: result.create_time
           }));
         return users;
-    }
+    },
+
+    //Update rol
+    updateUserRole: async function (username, roleid) {
+        return await new Promise((resolve, reject) => {
+            db.query(`UPDATE user SET role_id = ? WHERE username = ?;`, [roleid, username], (error, results) => {
+                if (error) {
+                    console.error("Error al actualitzar el rol: ", error);
+                    resolve(false);
+                }
+                resolve(results.affectedRows > 0);
+            });
+        });
+    },
 }

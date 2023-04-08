@@ -72,4 +72,17 @@ router.post('/signup', async (req, res) => {
 });
 
 
+//Actualització del rol d'usuari
+router.put('/:username/:roleid', async (req, res) => {
+  try {
+    if (req.isAdmin) {
+      res.json({ success: await userService.updateUserRole(req.params.username,req.params.roleid==-1 ? null : req.params.roleid) });
+    }
+    else throw new Error("Unauthorized.")
+  }
+  catch(error) {
+    res.json({ error: error.message });
+  }
+});
+
 module.exports = router;

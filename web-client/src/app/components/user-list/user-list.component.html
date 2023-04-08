@@ -18,9 +18,9 @@
         <ng-container matColumnDef="role">
             <th mat-header-cell *matHeaderCellDef> Rol </th>
             <td mat-cell *matCellDef="let element">
-                <mat-select [(value)]="element.role" (selectionChange)="changeRole(element.username, $event.value)">
+                <mat-select [(ngModel)]="element.role" (selectionChange)="changeRole(element.username, $event.value)">
                     <mat-option class="nowarp">Sense rol</mat-option>
-                    <mat-option class="nowarp" *ngFor="let role of roles" value={{role.id}}>{{role.name}}</mat-option>
+                    <mat-option class="nowarp" *ngFor="let role of roles" [value]="role.id">{{role.name}}</mat-option>
                 </mat-select>
             </td>
         </ng-container>

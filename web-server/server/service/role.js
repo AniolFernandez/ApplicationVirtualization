@@ -8,6 +8,7 @@ module.exports = {
                 if (error) {
                     console.error("Error al consultar la db: ", error);
                     reject('Error al consultar');
+                    return;
                 }
                 resolve(results);
             });
@@ -22,6 +23,7 @@ module.exports = {
                 if (error) {
                     console.error("Error al consultar la db: ", error);
                     reject('Error al consultar');
+                    return;
                 }
                 resolve(results[0].id);
             });
@@ -32,7 +34,8 @@ module.exports = {
                     console.error("Error al crear rol: ", error);
                     reject('Error al crear rol');
                 }
-                resolve(results.affectedRows == 1);
+                else
+                    resolve(results.affectedRows == 1);
             });
         });
         if (ok)
@@ -49,7 +52,8 @@ module.exports = {
                     console.error("Error al eliminar el rol de la db: ", error);
                     resolve(false);
                 }
-                resolve(results.affectedRows > 0);
+                else
+                    resolve(results.affectedRows > 0);
             });
         });
     },

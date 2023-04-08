@@ -47,7 +47,7 @@ export class UserAndRolesComponent {
       this.loading = true;
       this.roleService.delRole(role.id, (result: any) => {
         this.loading = false;
-        if (result.success) {
+        if (result != null) {
           this.roles.splice(index, 1);
         }
       });

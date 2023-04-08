@@ -41,7 +41,11 @@ router.post('/', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     if (req.isAdmin) {
-      res.json({ success: await roleService.deleteRoleById(req.params.id) });
+      if(!await roleService.deleteRoleById(req.params.id))
+        res.json({ error:'Error a l\'eliminar. Comprova que no estigui en ús.' });
+      else{
+        res.json({ success: true });
+      }
     }
     else throw new Error("Unauthorized.")
   }

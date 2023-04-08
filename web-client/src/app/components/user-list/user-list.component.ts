@@ -42,8 +42,17 @@ export class UserListComponent {
     );
   }
 
-  changeRole(username: string, role: string){
-    alert(username+" "+role);
+  changeRole(username: string, role: number){
+    this.loading = true;
+    this.http.put(`/user/${username}/${role ?? -1}`,{}).subscribe(
+      (msg: any) => {
+        this.loading = false;
+        if(msg.error) this.snackBar.Show(`❌ ${msg.error}`);
+      },
+      () => { //ha fallat la connexió
+        this.loading = false;
+        this.snackBar.Show("❌ No hi ha connexió amb el servidor");
+      }
+    );
   }
-
 }
