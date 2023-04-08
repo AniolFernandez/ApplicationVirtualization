@@ -58,4 +58,22 @@ export class RoleService {
       }
     );
   }
+
+  //Update del nom
+  public editRole(role: Role, callback: any) {
+    this.http.put(`/role`,role).subscribe(
+      (msg: any) => {
+        if(msg.error){ //Error en el servidor
+          this.snackBar.Show(`❌ ${msg.error.toString()}`);
+          callback(null);
+        }
+        else //tot ok
+          callback(msg);
+      },
+      () => { //Error en la connexió
+        callback(null);
+        this.snackBar.Show(`❌ No hi ha connexió amb el servidor`);
+      }
+    );
+  }
 }

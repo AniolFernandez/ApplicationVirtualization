@@ -66,7 +66,12 @@ export class UserAndRolesComponent {
     // Edita el nom del rol
     const index = this.roles.indexOf(role);
     if (index >= 0) {
-      this.roles[index].name = value;
+      this.roleService.editRole({id: role.id, name: value}, (result: any) => {
+        this.loading = false;
+        if (result != null) {
+          this.roles[index].name = value;
+        }
+      });
     }
   }
 }

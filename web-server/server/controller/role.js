@@ -32,24 +32,42 @@ router.post('/', async (req, res) => {
     }
     else throw new Error("Unauthorized.")
   }
-  catch(error) {
+  catch (error) {
     res.json({ error: error.message });
   }
 });
+
+//Creació d'un nou rol
+router.put('/', async (req, res) => {
+  try {
+    if (req.isAdmin) {
+      let ok = await roleService.editarRol(req.body);
+      if (ok)
+        res.json({ success: true });
+      else
+        res.json({ error: "No s'ha pogut editar." });
+    }
+    else throw new Error("Unauthorized.")
+  }
+  catch (error) {
+    res.json({ error: error.message });
+  }
+});
+
 
 //Obtenció del llistat de rols
 router.delete('/:id', async (req, res) => {
   try {
     if (req.isAdmin) {
-      if(!await roleService.deleteRoleById(req.params.id))
-        res.json({ error:'Error a l\'eliminar. Comprova que no estigui en ús.' });
-      else{
+      if (!await roleService.deleteRoleById(req.params.id))
+        res.json({ error: 'Error a l\'eliminar. Comprova que no estigui en ús.' });
+      else {
         res.json({ success: true });
       }
     }
     else throw new Error("Unauthorized.")
   }
-  catch(error) {
+  catch (error) {
     res.json({ error: error.message });
   }
 });
