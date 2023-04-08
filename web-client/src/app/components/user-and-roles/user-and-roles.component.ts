@@ -13,21 +13,13 @@ export class UserAndRolesComponent {
 
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   roles: Role[] = [];
-  rolesDic: any = {};
   loading: boolean = false;
 
   constructor(private roleService: RoleService) {
     this.loading = true;
     roleService.getRoles((roles: any) => {
       this.loading = false;
-      this.rolesDic = roles;
-      this.roles = [];
-      for (const [key, value] of Object.entries(roles)) {
-        this.roles.push({
-          id: parseInt(key),
-          name: value!.toString(),
-        })
-      }
+      this.roles = roles;
     })
   }
 

@@ -12,13 +12,7 @@ module.exports = {
                 resolve(results);
             });
         });
-
-        //Diccionari de rols id -> nom
-        const roles = {}
-        results.forEach(result => {
-            roles[result.id] = result.name
-        });
-        return roles;
+        return results;
     },
 
     //Afegir rol
