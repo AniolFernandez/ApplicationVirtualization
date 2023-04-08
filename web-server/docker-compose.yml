@@ -33,6 +33,8 @@ services:
       DB_USER: root
       DB_PASSWORD: root
       DB_DATABASE: appvirt
+      ADMIN_PW: admin 
+      REGISTRY_HOST: localhost:5000
     network_mode: "host"
     depends_on:
       - mysql
