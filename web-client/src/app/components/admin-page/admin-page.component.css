@@ -1,4 +1,4 @@
-.overflow{
+.overflow {
     overflow-y: scroll;
     display: block;
     height: 100vh;
@@ -8,7 +8,7 @@
 }
 
 ::-webkit-details-marker {
-    display:none;
+    display: none;
 }
 
 ::-webkit-scrollbar {
@@ -16,12 +16,19 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--gray); 
-    border: 7px  var(--soft-gray) solid;
+    background: var(--gray);
+    border: 7px var(--soft-gray) solid;
     border-right: 4px var(--soft-gray) solid;
     border-radius: 30px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--gray); 
+    background: var(--gray);
+}
+
+@media screen and (max-width: 800px) {
+    .overflow {
+        width: calc(100% - 10px);
+        margin-left: 10px;
+    }
 }

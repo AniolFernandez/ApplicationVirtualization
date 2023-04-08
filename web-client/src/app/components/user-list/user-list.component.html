@@ -35,8 +35,6 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
     <mat-progress-bar *ngIf="loading" class="linload" mode="indeterminate"></mat-progress-bar>
-    <mat-paginator [pageSize]="10" showFirstLastButtons hidePageSize="true">
-        
-    </mat-paginator>
+    <mat-paginator [pageSize]="10" showFirstLastButtons hidePageSize="true"></mat-paginator>
     <button mat-button class="refresh" (click)="getUsers()"><mat-icon>refresh</mat-icon>Tornar a carregar</button>
 </div>

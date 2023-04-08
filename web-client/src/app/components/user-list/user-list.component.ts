@@ -21,7 +21,6 @@ export class UserListComponent {
   @Input() roles: Role[] = [];
 
   constructor(private snackBar: SnackbarService, private http: HttpClient){
-    this.dataSource.paginator = this.paginator;
     this.getUsers();
   }
 
@@ -34,6 +33,7 @@ export class UserListComponent {
         this.loading = false;
         this.users = msg;
         this.dataSource = new MatTableDataSource<User>(this.users);
+        this.dataSource.paginator = this.paginator;
       },
       () => { //ha fallat la connexió
         this.loading = false;
