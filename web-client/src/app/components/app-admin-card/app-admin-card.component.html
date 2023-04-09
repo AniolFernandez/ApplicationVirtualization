@@ -1,0 +1,27 @@
+<mat-card class="card">
+    <mat-card-content class="content">
+        <span class="dockername"><label>Imatge:</label> {{app?.docker_image}}</span>
+        <img [src]="app?.logo" onerror="this.src='/assets/img/placeholder.png'" />
+
+        <mat-form-field>
+            <mat-label>Nom visible</mat-label>
+            <input matInput placeholder="Nom visible de l'applicacó" [value]="app?.name" maxlength="255">
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Logo URL</mat-label>
+            <input matInput placeholder="Enllaç a la imatge a mostrar" [(ngModel)]="app!.logo">
+        </mat-form-field>
+        <mat-checkbox color="primary" [(ngModel)]="app!.availableUnauth">Accesible sense autenticació</mat-checkbox>
+        <mat-checkbox color="primary" [(ngModel)]="app!.availableAnyAuth" [disabled]="app!.availableUnauth">Accesible sense rol</mat-checkbox>
+        <mat-form-field appearance="fill">
+            <mat-select placeholder="Accesible per rols" [(ngModel)]="selectedRoles" multiple [disabled]="app?.availableUnauth! || app?.availableAnyAuth!">
+                <mat-option *ngFor="let role of roles.roles" [value]="role.id">
+                    {{ role.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button mat-stroked-button color="primary" (click)="save()">Guardar</button>
+        <span class="new" *ngIf="new">Pendent de configurar</span>
+    </mat-card-content>
+</mat-card>

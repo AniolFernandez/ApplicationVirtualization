@@ -1,0 +1,8 @@
+<h2>Aplicacions disponibles</h2>
+<div class="cards">
+    <app-app-admin-card *ngFor="let app of apps;"
+        [app]="app" 
+        [new]="true">
+    </app-app-admin-card>
+
+</div>

@@ -3,7 +3,7 @@
 <mat-form-field class="chip-list" appearance="fill">
     <mat-label>Rols</mat-label>
     <mat-chip-grid #chipGrid>
-        <mat-chip-row *ngFor="let rol of roles" (removed)="remove(rol)" [editable]="true" (edited)="edit(rol, $event)">
+        <mat-chip-row *ngFor="let rol of thisObj.roles" (removed)="remove(rol)" [editable]="true" (edited)="edit(rol, $event)">
             {{rol.name}}
             <button matChipRemove>
                 <mat-icon>cancel</mat-icon>
@@ -14,4 +14,4 @@
             (matChipInputTokenEnd)="add($event)" />
     </mat-chip-grid>
 </mat-form-field>
-<app-user-list [roles]="roles"></app-user-list>
+<app-user-list [roles]="thisObj.roles"></app-user-list>

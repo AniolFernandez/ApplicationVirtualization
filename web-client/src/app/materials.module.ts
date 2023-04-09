@@ -14,6 +14,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
 
 @NgModule({
   exports: [
@@ -31,7 +33,8 @@ import { MatChipsModule } from '@angular/material/chips';
     MatPaginatorModule,
     MatTableModule,
     MatSelectModule,
-    MatChipsModule
+    MatChipsModule,
+    MatCheckboxModule,
   ]
 })
 export class MaterialsModule { }

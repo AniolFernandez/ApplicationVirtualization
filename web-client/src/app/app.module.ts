@@ -20,6 +20,8 @@ import { SnackbarService } from './services/snackbar.service';
 import { AdminPageComponent } from './components/admin-page/admin-page.component';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { UserAndRolesComponent } from './components/user-and-roles/user-and-roles.component';
+import { AppAdminComponent } from './components/app-admin/app-admin.component';
+import { AppAdminCardComponent } from './components/app-admin-card/app-admin-card.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,9 @@ import { UserAndRolesComponent } from './components/user-and-roles/user-and-role
     SignupComponent,
     AdminPageComponent,
     UserListComponent,
-    UserAndRolesComponent
+    UserAndRolesComponent,
+    AppAdminComponent,
+    AppAdminCardComponent
   ],
   imports: [
     BrowserModule,

@@ -12,14 +12,15 @@ import { RoleService } from 'src/app/services/role.service';
 export class UserAndRolesComponent {
 
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
-  roles: Role[] = [];
+  public static roles: Role[] = [];
+  thisObj = UserAndRolesComponent;
   loading: boolean = false;
 
   constructor(private roleService: RoleService) {
     this.loading = true;
     roleService.getRoles((roles: any) => {
       this.loading = false;
-      this.roles = roles;
+      UserAndRolesComponent.roles = roles;
     })
   }
 
@@ -32,7 +33,7 @@ export class UserAndRolesComponent {
       this.roleService.addRole(value, (result: any) => {
         this.loading = false;
         if (result)
-          this.roles.push(result);
+          UserAndRolesComponent.roles.push(result);
       });
 
     }
@@ -40,7 +41,7 @@ export class UserAndRolesComponent {
   }
 
   remove(role: Role): void {
-    const index = this.roles.indexOf(role);
+    const index = UserAndRolesComponent.roles.indexOf(role);
 
     //Crida per eliminar el rol
     if (index >= 0) {
@@ -48,7 +49,7 @@ export class UserAndRolesComponent {
       this.roleService.delRole(role.id, (result: any) => {
         this.loading = false;
         if (result != null) {
-          this.roles.splice(index, 1);
+          UserAndRolesComponent.roles.splice(index, 1);
         }
       });
     }
@@ -64,12 +65,12 @@ export class UserAndRolesComponent {
     }
 
     // Edita el nom del rol
-    const index = this.roles.indexOf(role);
+    const index = UserAndRolesComponent.roles.indexOf(role);
     if (index >= 0) {
-      this.roleService.editRole({id: role.id, name: value}, (result: any) => {
+      this.roleService.editRole({ id: role.id, name: value }, (result: any) => {
         this.loading = false;
         if (result != null) {
-          this.roles[index].name = value;
+          UserAndRolesComponent.roles[index].name = value;
         }
       });
     }
