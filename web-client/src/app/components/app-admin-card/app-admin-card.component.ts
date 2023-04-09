@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { AppAdmin } from 'src/app/models/app-admin';
 import { Role } from 'src/app/models/role';
-import { UserAndRolesComponent } from '../user-and-roles/user-and-roles.component';
+import { AppService } from 'src/app/services/app.service';
 
 @Component({
   selector: 'app-app-admin-card',
@@ -9,13 +9,19 @@ import { UserAndRolesComponent } from '../user-and-roles/user-and-roles.componen
   styleUrls: ['./app-admin-card.component.css']
 })
 export class AppAdminCardComponent {
-  @Input() app: AppAdmin | null = null;
-  roles = UserAndRolesComponent;
-  @Input() new: boolean= false;
-  selectedRoles: string[] = [];
+  @Input() app!: AppAdmin;
+  @Input() roles!: Role[];
+  loading: boolean=false;
+
+  constructor(private appService: AppService){}
 
   save(){
-    this.new=false;
-    alert(this.app!.logo);
+    this.loading=true;
+    this.appService.updateApp(this.app,(success:boolean)=>{
+      if(success)
+        this.app.pendingConfig=false;
+      this.loading=false;
+    });
+
   }
 }

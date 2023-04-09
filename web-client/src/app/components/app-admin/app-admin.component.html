@@ -2,7 +2,8 @@
 <div class="cards">
     <app-app-admin-card *ngFor="let app of apps;"
         [app]="app" 
-        [new]="true">
+        [roles]="roles.roles">
     </app-app-admin-card>
-
+    <mat-progress-bar *ngIf="loading" class="linload" mode="indeterminate"></mat-progress-bar>
 </div>
+

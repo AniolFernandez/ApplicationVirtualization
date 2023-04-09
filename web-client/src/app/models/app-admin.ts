@@ -5,6 +5,7 @@ export class AppAdmin{
         public logo: string='',
         public availableUnauth: boolean=true,
         public availableAnyAuth: boolean=true,
-        public pendingConfig: boolean=true
+        public pendingConfig: boolean=true,
+        public roles: number[]=[]
     ){}
 }
