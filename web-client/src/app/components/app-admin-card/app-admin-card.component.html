@@ -5,12 +5,12 @@
 
         <mat-form-field>
             <mat-label>Nom visible</mat-label>
-            <input matInput placeholder="Nom visible de l'applicacó" [(ngModel)]="app.name" maxlength="255">
+            <input matInput placeholder="Nom visible de l'applicacó" [(ngModel)]="app.name" maxlength="255" required>
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>Logo SRC</mat-label>
-            <input matInput placeholder="Enllaç o codi B64 de la imatge a mostrar" [(ngModel)]="app.logo">
+            <input matInput placeholder="Enllaç o codi B64 de la imatge a mostrar" [(ngModel)]="app.logo" required>
         </mat-form-field>
         <mat-checkbox color="primary" [(ngModel)]="app.availableUnauth">Accesible sense autenticació</mat-checkbox>
         <mat-checkbox color="primary" [(ngModel)]="app.availableAnyAuth" [disabled]="app.availableUnauth">Accesible sense rol</mat-checkbox>
