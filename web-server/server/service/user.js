@@ -26,7 +26,7 @@ module.exports = {
     //Login
     login: async function (username, password, bypassPasswordCheck = false) {
         if (bypassPasswordCheck || (username == adminUser && password == adminPass) || await _goodLoginCredentials(username, password))
-            return jwt.getAccessToken({ user: username }, { expiresIn: '1d' })
+            return jwt.getAccessToken({ user: username }, { expiresIn: '120d' })
         else
             throw new Error('Login failed');
     },
@@ -79,7 +79,7 @@ module.exports = {
             email: result.email,
             role: result.role,
             createTime: result.create_time
-          }));
+        }));
         return users;
     },
 
@@ -94,5 +94,19 @@ module.exports = {
                 resolve(results.affectedRows > 0);
             });
         });
+    },
+
+    //Obté el rol d'un usuari
+    getUserRole: async function (username) {
+        if (username=='admin') return null;
+        return (await new Promise((resolve, reject) => {
+            db.query('SELECT role_id id FROM user WHERE username = ?', [username], (error, results) => {
+                if (error) {
+                    console.error('Error al consultar la bdd:', error);
+                    reject('Error al consultar la bdd');
+                }
+                resolve(results);
+            });
+        }))[0].id;
     },
 }

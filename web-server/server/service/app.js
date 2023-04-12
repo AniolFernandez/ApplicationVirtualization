@@ -93,8 +93,8 @@ module.exports = {
                                 appsCataleg[app.docker_image].pendingConfig = false;
                                 appsCataleg[app.docker_image].name = app.name;
                                 appsCataleg[app.docker_image].logo = app.logo;
-                                appsCataleg[app.docker_image].availableUnauth = app.availableUnauth.toString()==='1';
-                                appsCataleg[app.docker_image].availableAnyAuth = app.availableAnyAuth.toString()==='1';
+                                appsCataleg[app.docker_image].availableUnauth = app.availableUnauth.toString() === '1';
+                                appsCataleg[app.docker_image].availableAnyAuth = app.availableAnyAuth.toString() === '1';
                                 appsCataleg[app.docker_image].roles = app.roles ? app.roles.split(',').map(x => parseInt(x)) : [];
                             }
                         })
@@ -112,5 +112,53 @@ module.exports = {
         await purgeAppData(app);
         await insertApp(app);
         await insertAppRoles(app);
-    }
+    },
+
+
+    //Obtenir apps disponibles per a una sessió
+    getApps: async function (filter) {
+        //Obtenim totes les apps del cataleg
+        const catalog = await (await fetch(`http://${process.env.REGISTRY_HOST || '192.168.56.101:5000'}/v2/_catalog`)).json();
+
+        //Diccionari marcant quines apps existeixen al cataleg
+        const appsCataleg = {};
+        if (catalog.repositories)
+            catalog.repositories.map(app => appsCataleg[app] = true);
+
+
+        //Llista amb les apps que l'usuari pot veure i son al cataleg.
+        const filteredApps = [];
+
+        //Fetching de les apps a les que tenim accés
+        let query = 'SELECT DISTINCT docker_image, name, logo FROM app t0 ';
+        if(!filter.isAdmin)
+            query = query + `LEFT JOIN role_has_app t1 ON t0.docker_image = t1.app_docker_image 
+                            WHERE availableUnauth = 1
+                            ${filter.user?'OR availableAnyAuth = 1':''}
+                            ${filter.role?'OR t1.role_id = ?':''}
+                            `;
+        await new Promise((resolve, reject) => {
+            db.query(query, [filter.role], (error, results) => {
+                    if (error) {
+                        console.error('Error al consultar la bdd:', error);
+                        reject();
+                    }
+                    else {
+                        results.forEach(app => {
+                            if (appsCataleg[app.docker_image]) {
+                                filteredApps.push({
+                                    image: app.docker_image,
+                                    name: app.name,
+                                    logo: app.logo
+                                })
+                            }
+                        })
+                    }
+                    resolve();
+                });
+        });
+
+        //retornem les imatges
+        return filteredApps;
+    },
 }
