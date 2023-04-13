@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { State } from 'src/app/State';
 import { Application } from 'src/app/models/application';
 import { Category } from 'src/app/models/category';
+import { AppService } from 'src/app/services/app.service';
 
 @Component({
   selector: 'app-aside',
@@ -11,69 +12,12 @@ import { Category } from 'src/app/models/category';
 export class AsideComponent {
   state = State;
   @Output() openAppEvent = new EventEmitter<Application>();
-  public categories: Category[];
-  public loaded: boolean;
-  constructor(){
-    this.loaded = false;
-    this.categories=[];
-    setTimeout(()=>{
+  public apps: Application[] = [];
+  public loaded: boolean = false;
+  constructor(private appService : AppService){
+    this.appService.getApps((apps:any)=>{
+      this.apps = apps;
       this.loaded=true;
-      this.categories = [
-        {
-          name: "ARQUITECTURA",
-          isOpen: true,
-          apps: [
-            {
-                name: "Adobe Photoshop CS6",
-                ico: "/assets/img/ps.png",
-                selected: false,
-                active: false
-            },
-            {
-                name: "Adobe Photoshop CS7",
-                ico: "/assets/img/ps.png",
-                selected: false,
-                active: false
-            }
-          ]
-        },
-        {
-          name: "ARQUITECTURA2",
-          isOpen: false,
-          apps: [
-            {
-                name: "Adobe Photoshop CS6",
-                ico: "/assets/img/ps.png",
-                selected: false,
-                active: false
-            },
-            {
-                name: "Adobe Photoshop CS7",
-                ico: "/assets/img/ps.png",
-                selected: false,
-                active: false
-            }
-          ]
-        },
-        {
-          name: "ARQUITECTURA3",
-          isOpen: true,
-          apps: [
-            {
-                name: "Adobe Photoshop CS6",
-                ico: "/assets/img/ps.png",
-                selected: false,
-                active: false
-            },
-            {
-                name: "Adobe Photoshop CS7",
-                ico: "/assets/img/ps.png",
-                selected: false,
-                active: false
-            }
-          ]
-        }
-      ]
-    }, 1000);
+    });
   }
 }

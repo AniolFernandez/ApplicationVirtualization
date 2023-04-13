@@ -133,10 +133,10 @@ module.exports = {
         let query = 'SELECT DISTINCT docker_image, name, logo FROM app t0 ';
         if(!filter.isAdmin)
             query = query + `LEFT JOIN role_has_app t1 ON t0.docker_image = t1.app_docker_image 
-                            WHERE availableUnauth = 1
-                            ${filter.user?'OR availableAnyAuth = 1':''}
-                            ${filter.role?'OR t1.role_id = ?':''}
-                            `;
+            WHERE availableUnauth = 1
+            ${filter.user?'OR availableAnyAuth = 1':''}
+            ${filter.role!=null?'OR t1.role_id = ?':''}
+            `;
         await new Promise((resolve, reject) => {
             db.query(query, [filter.role], (error, results) => {
                     if (error) {
@@ -149,7 +149,7 @@ module.exports = {
                                 filteredApps.push({
                                     image: app.docker_image,
                                     name: app.name,
-                                    logo: app.logo
+                                    ico: app.logo
                                 })
                             }
                         })

@@ -4,7 +4,7 @@
     'active': app.active,
     'in-open-apps': inOpenApps
 }" (click)="openThisApp()">
-<img src="{{app.ico}}"/>
-{{app.name}}
+<img [src]="app.ico"/>
+<div class="name">{{app.name}}</div>
 <span *ngIf="inOpenApps" (click)="closeThisApp()"></span>
 </div>

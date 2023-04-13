@@ -1,11 +1,8 @@
 <aside [class.aside-disabled]="!state.asideOpen">
     <div class="loader" id="aside-loader" *ngIf="!loaded"></div>
-    <ng-container *ngFor="let category of categories;">
-        <details [open]="category.isOpen">
-            <summary>{{category.name}}</summary>
-            <ng-container *ngFor="let app of category.apps;">
-                <app-application [app]=app (openAppEvent)="openAppEvent.emit($event)"></app-application>
-            </ng-container>
-        </details>
+    <p *ngIf="loaded && apps.length == 0" class="text">No hi ha apps disponibles.</p>
+    <h4 *ngIf="loaded && apps.length != 0" class="text">APLICACIONS</h4>
+    <ng-container *ngFor="let app of apps;">
+        <app-application [app]=app (openAppEvent)="openAppEvent.emit($event)"></app-application>
     </ng-container>
 </aside>

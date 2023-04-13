@@ -99,14 +99,14 @@ module.exports = {
     //Obté el rol d'un usuari
     getUserRole: async function (username) {
         if (username=='admin') return null;
-        return (await new Promise((resolve, reject) => {
+        return await new Promise((resolve, reject) => {
             db.query('SELECT role_id id FROM user WHERE username = ?', [username], (error, results) => {
                 if (error) {
                     console.error('Error al consultar la bdd:', error);
                     reject('Error al consultar la bdd');
                 }
-                resolve(results);
+                resolve(results[0].id);
             });
-        }))[0].id;
+        });
     },
 }

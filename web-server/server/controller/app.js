@@ -22,12 +22,12 @@ router.get('/my-apps', async (req, res) => {
     let filter = {
       isAdmin: req.isAdmin,
       user: req.authUser,
-      role: req.authUser ? userService.getUserRole(user) : null
+      role: req.authUser ? await userService.getUserRole(req.authUser) : null
     }
     res.json(await appService.getApps(filter));
   }
   catch (err) {
-    res.json({ error: err.message });
+    res.json({ error: "Error al obtenir apps." });
   }
 });
 
