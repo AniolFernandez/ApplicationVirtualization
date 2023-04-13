@@ -2,7 +2,7 @@
     <div class="loader" id="aside-loader" *ngIf="!loaded"></div>
     <p *ngIf="loaded && apps.length == 0" class="text">No hi ha apps disponibles.</p>
     <h4 *ngIf="loaded && apps.length != 0" class="text">APLICACIONS</h4>
-    <ng-container *ngFor="let app of apps;">
-        <app-application [app]=app (openAppEvent)="openAppEvent.emit($event)"></app-application>
+    <ng-container *ngFor="let app of apps; let idx = index">
+        <app-application [app]=app (openAppEvent)="openAppEvent.emit($event)" [delay]="getDelay(idx)"></app-application>
     </ng-container>
 </aside>

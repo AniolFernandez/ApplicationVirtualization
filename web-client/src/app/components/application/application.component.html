@@ -3,7 +3,7 @@
     'selected-app': app.selected && !inOpenApps,
     'active': app.active,
     'in-open-apps': inOpenApps
-}" (click)="openThisApp()">
+}" (click)="openThisApp()" style="--delay: {{delay}}">
 <img [src]="app.ico"/>
 <div class="name">{{app.name}}</div>
 <span *ngIf="inOpenApps" (click)="closeThisApp()"></span>

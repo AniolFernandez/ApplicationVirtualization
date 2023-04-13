@@ -9,6 +9,7 @@ import { Application } from 'src/app/models/application';
 export class ApplicationComponent {
   @Input() app!: Application;
   @Input() inOpenApps: boolean = false;
+  @Input() delay: string="0s";
   @Output() openAppEvent = new EventEmitter<Application>();
   @Output() closeAppEvent = new EventEmitter<Application>();
 

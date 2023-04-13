@@ -14,6 +14,9 @@ export class AsideComponent {
   @Output() openAppEvent = new EventEmitter<Application>();
   public apps: Application[] = [];
   public loaded: boolean = false;
+  public getDelay(idx: number){
+    return 0.20*idx+"s";
+  }
   constructor(private appService : AppService){
     this.appService.getApps((apps:any)=>{
       this.apps = apps;
