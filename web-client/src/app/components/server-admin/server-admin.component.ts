@@ -12,8 +12,8 @@ export class ServerAdminComponent {
 
   servers: Server[] = []
 
-  constructor(private http: HttpClient, private snackBar: SnackbarService){
-    this.http.get('/server').subscribe(
+  constructor(private http: HttpClient, private snackBar: SnackbarService) {
+    const checkStatus = () => this.http.get('/server').subscribe(
       (msg: any) => {
         this.servers = msg;
       },
@@ -21,5 +21,7 @@ export class ServerAdminComponent {
         this.snackBar.Show("❌ No hi ha connexió amb el servidor");
       }
     );
+    setInterval(checkStatus, 15000);
+    checkStatus();
   }
 }

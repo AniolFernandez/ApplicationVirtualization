@@ -1,7 +1,7 @@
 export class Server{
     constructor(
         public ip: string,
-        public cpu: string,
-        public ram: string,
+        public cpu: number,
+        public ram: number,
     ){}
 }

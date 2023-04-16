@@ -6,7 +6,7 @@ const router = express.Router();
 router.post('/keepalive', async (req, res) => {
     try {
         if (req.isAdmin) {
-            appserverService.keepalive(req.ip);
+            appserverService.keepalive(req.ip, req.body);
             res.json({});
         }
         else throw new Error("Unauthorized.")

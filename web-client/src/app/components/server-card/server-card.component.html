@@ -1,8 +1,19 @@
 <mat-card class="card">
     <mat-card-content class="content">
         <mat-icon class="compu">computer</mat-icon>
-        <label><strong>Servidor:</strong> {{server.ip}}</label>
-        <label><strong>Ús CPU:</strong> {{server.cpu}}</label>
-        <label><strong>Ús RAM:</strong> {{server.ram}}</label>
+        <table>
+            <tr>
+                <th>Servidor</th>
+                <td>{{server.ip}}</td>
+            </tr>
+            <tr>
+                <th>Ús CPU</th>
+                <td>{{server.cpu | number : '1.2-2'}}%</td>
+            </tr>
+            <tr>
+                <th>Ús RAM</th>
+                <td>{{server.ram | number : '1.2-2'}}%</td>
+            </tr>
+        </table>
     </mat-card-content>
 </mat-card>

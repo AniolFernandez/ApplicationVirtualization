@@ -12,7 +12,7 @@ import (
 	"github.com/docker/docker/client"
 )
 
-var display int=99 //TODO: Fer bé, amb pila de ports disponibles
+var display int=99
 
 //Ens permet arrancar docker de forma asyncrona
 func StartDockerImage(imageName string, port string, volume string, close chan struct{}){

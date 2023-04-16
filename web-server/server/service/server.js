@@ -9,7 +9,7 @@ const servers = {}
 setInterval(() => {
     const now = Date.now();
     for (const ip in servers) {
-        if (now - servers[ip] > TIMEOUT) {
+        if (now - servers[ip].lastTick > TIMEOUT) {
             delete servers[ip];
             console.log(`Timeout per: ${ip}`);
         }
@@ -18,8 +18,12 @@ setInterval(() => {
 
 module.exports = {
     //Status d'un servidor
-    keepalive: function (ip) {
-        servers[ip] = Date.now();
+    keepalive: function (ip, { ram, cpu }) {
+        servers[ip] = {
+            lastTick: Date.now(),
+            ram: ram,
+            cpu: cpu
+        }
     },
 
     //Obtenció dels servidors actuals
@@ -29,8 +33,8 @@ module.exports = {
             for (const ip in servers) {
                 svs.push({
                     ip: ip,
-                    cpu: "xxx",
-                    ram: "yyy"
+                    cpu: servers[ip].cpu,
+                    ram: servers[ip].ram
                 })
             }
             return svs;

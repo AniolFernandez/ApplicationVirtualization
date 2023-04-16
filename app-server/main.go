@@ -33,6 +33,7 @@ func main() {
     http.HandleFunc("/upload", UploadFile)
     http.HandleFunc("/list", ListDirectory)
     cors := allowCors(http.DefaultServeMux)
+    KeepAlive()
     //log.Fatal(http.ListenAndServeTLS("0.0.0.0:8443", "cert.pem", "key.pem", cors))
     log.Fatal(http.ListenAndServe("0.0.0.0:8443", cors))
 }
