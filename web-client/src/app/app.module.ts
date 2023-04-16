@@ -22,6 +22,8 @@ import { UserListComponent } from './components/user-list/user-list.component';
 import { UserAndRolesComponent } from './components/user-and-roles/user-and-roles.component';
 import { AppAdminComponent } from './components/app-admin/app-admin.component';
 import { AppAdminCardComponent } from './components/app-admin-card/app-admin-card.component';
+import { ServerAdminComponent } from './components/server-admin/server-admin.component';
+import { ServerCardComponent } from './components/server-card/server-card.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +41,9 @@ import { AppAdminCardComponent } from './components/app-admin-card/app-admin-car
     UserListComponent,
     UserAndRolesComponent,
     AppAdminComponent,
-    AppAdminCardComponent
+    AppAdminCardComponent,
+    ServerAdminComponent,
+    ServerCardComponent
   ],
   imports: [
     BrowserModule,
