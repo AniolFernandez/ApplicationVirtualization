@@ -1,0 +1,6 @@
+<h2>Servidors d'aplicacions actius</h2>
+<h4>Actius: {{servers.length}}</h4>
+<div class="cards">
+    <app-server-card *ngFor="let server of servers;" [server]="server" >
+    </app-server-card>
+</div>

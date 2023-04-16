@@ -17,4 +17,15 @@ router.post('/keepalive', async (req, res) => {
 });
 
 
+//Obtenció dels servidors disponibles
+router.get('/', async (req, res) => {
+    try {
+        res.json(appserverService.getServers(req.isAdmin));
+    }
+    catch (err) {
+        res.json([]);
+    }
+});
+
+
 module.exports = router;

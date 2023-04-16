@@ -23,4 +23,4 @@ app.use('/app', appRouter);
 app.use('/server', appserverRouter);
 
 //Arranca el servidor web
-app.listen(port, () => console.log(`Server listening at http://localhost:${port}`));
+app.listen(port, "0.0.0.0", () => console.log(`Server listening at http://0.0.0.0:${port}`));

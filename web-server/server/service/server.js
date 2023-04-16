@@ -21,4 +21,20 @@ module.exports = {
     keepalive: function (ip) {
         servers[ip] = Date.now();
     },
+
+    //Obtenció dels servidors actuals
+    getServers: function(admin){
+        if(admin){
+            svs = [];
+            for (const ip in servers) {
+                svs.push({
+                    ip: ip,
+                    cpu: "xxx",
+                    ram: "yyy"
+                })
+            }
+            return svs;
+        }
+        else return Array.from( servers.keys() ); //Usuaris
+    }
 }
