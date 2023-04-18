@@ -12,22 +12,16 @@ import { ServersService } from 'src/app/services/servers.service';
 })
 export class AsideComponent {
   state = State;
-  @Output() openAppEvent = new EventEmitter<Application>();
   public apps: Application[] = [];
   public loaded: boolean = false;
-  public getDelay(idx: number){
-    return 0.20*idx+"s";
+  public getDelay(idx: number) {
+    return 0.20 * idx + "s";
   }
-  constructor(private appService : AppService, private serversService: ServersService){
-    this.appService.getApps((apps:any)=>{
+  constructor(private appService: AppService, private serversService: ServersService) {
+    this.appService.getApps((apps: any) => {
       this.apps = apps;
-      this.loaded=true;
+      this.loaded = true;
     });
-    this.serversService.getServersWithLatency((servers: any)=>{this.state.servers=servers});
-  }
-
-  openApp(event: any){
-    if(this.state.servers)
-      this.openAppEvent.emit(event);
+    this.serversService.getServersWithLatency((servers: any) => { this.state.servers = servers });
   }
 }

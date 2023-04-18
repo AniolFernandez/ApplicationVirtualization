@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Application } from 'src/app/models/application';
 import { State } from 'src/app/State';
 import { AppStream } from 'src/app/models/appStream';
+import { AppService } from 'src/app/services/app.service';
 
 @Component({
   selector: 'app-page-container',
@@ -10,31 +11,4 @@ import { AppStream } from 'src/app/models/appStream';
 })
 export class PageContainerComponent {
   public state = State;
-
-  openApp(app: Application){
-    if(!app.selected){
-      State.openApps.push(app);
-      State.openAppsStreams[app.name] = new AppStream("192.168.56.101", () => this.closeApp(app));
-    }
-    if(State.activeApp){
-      State.activeApp.active=false;
-    }
-    State.activeApp=app;
-    State.activeApp.selected=true;
-    State.activeApp.active=true;
-  }
-
-  closeApp(app: Application){
-    State.openApps=State.openApps.filter((x) => x!=app);
-    if(State.activeApp==app){
-      if(State.openApps.length>0)
-        this.openApp(State.openApps[State.openApps.length-1]);
-      else
-        State.activeApp=null;
-    }
-    app.active=false;
-    app.selected=false;
-    State.openAppsStreams[app.name].closeConnection();
-    delete State.openAppsStreams[app.name];
-  }
 }

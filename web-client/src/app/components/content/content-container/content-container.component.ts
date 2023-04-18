@@ -8,8 +8,6 @@ import { State } from 'src/app/State';
   styleUrls: ['./content-container.component.css']
 })
 export class ContentContainerComponent {
-  @Output() openAppEvent = new EventEmitter<Application>();
-  @Output() closeAppEvent = new EventEmitter<Application>();
   @ViewChild('stream') streamElement!: ElementRef;
   globals = State;
   constructor(){

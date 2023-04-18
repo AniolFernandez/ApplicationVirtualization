@@ -1,5 +1,5 @@
 <div class="content-container" [class.content-container-aside-disabled]="!globals.asideOpen">
-    <app-content-navigation [openApps]="globals.openApps" (closeAppEvent)="closeAppEvent.emit($event)" (openAppEvent)="openAppEvent.emit($event)"></app-content-navigation>
+    <app-content-navigation [openApps]="globals.openApps"></app-content-navigation>
     <div id="display" [ngClass]="{ 'black-bg': globals.activeApp && globals.openAppsStreams[globals.activeApp.name].stream}">
         <video *ngIf="globals.activeApp && globals.openAppsStreams[globals.activeApp.name].stream"
             [srcObject]="globals.openAppsStreams[globals.activeApp.name].stream"

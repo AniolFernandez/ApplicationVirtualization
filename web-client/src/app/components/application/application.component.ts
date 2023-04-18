@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { State } from 'src/app/State';
 import { Application } from 'src/app/models/application';
+import { AppService } from 'src/app/services/app.service';
 
 @Component({
   selector: 'app-application',
@@ -9,15 +11,16 @@ import { Application } from 'src/app/models/application';
 export class ApplicationComponent {
   @Input() app!: Application;
   @Input() inOpenApps: boolean = false;
-  @Input() delay: string="0s";
-  @Output() openAppEvent = new EventEmitter<Application>();
-  @Output() closeAppEvent = new EventEmitter<Application>();
+  @Input() delay: string = "0s";
 
-  openThisApp(){
-    this.openAppEvent.emit(this.app);
+  constructor(private appService: AppService) { }
+
+  openThisApp() {
+    if (State.servers)
+      this.appService.openApp(this.app);
   }
 
-  closeThisApp(){
-    this.closeAppEvent.emit(this.app);
+  closeThisApp() {
+    this.appService.closeApp(this.app);
   }
 }

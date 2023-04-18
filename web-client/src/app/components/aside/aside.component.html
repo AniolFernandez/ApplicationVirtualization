@@ -3,6 +3,6 @@
     <p *ngIf="loaded && apps.length == 0" class="text">No hi ha apps disponibles.</p>
     <h4 *ngIf="loaded && apps.length != 0" class="text">APLICACIONS</h4>
     <ng-container *ngFor="let app of apps; let idx = index">
-        <app-application [app]=app (openAppEvent)="openApp($event)" [delay]="getDelay(idx)"></app-application>
+        <app-application [app]=app [delay]="getDelay(idx)"></app-application>
     </ng-container>
 </aside>

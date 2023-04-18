@@ -1,5 +1,5 @@
 <div class="page-container">
-    <app-aside (openAppEvent)="openApp($event)"></app-aside>
-    <app-content-container (openAppEvent)="openApp($event)" (closeAppEvent)="closeApp($event)"></app-content-container>
+    <app-aside></app-aside>
+    <app-content-container></app-content-container>
 </div>
-<app-fsbrowser  *ngIf="state.openFS"></app-fsbrowser>
+<app-fsbrowser *ngIf="state.openFS"></app-fsbrowser>

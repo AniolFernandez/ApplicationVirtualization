@@ -10,8 +10,6 @@ import { Application } from 'src/app/models/application';
 export class ContentNavigationComponent {
   @ViewChild('openAppsDiv') openAppsDiv!: ElementRef;
   @Input() openApps: Application[] = [];
-  @Output() openAppEvent = new EventEmitter<Application>();
-  @Output() closeAppEvent = new EventEmitter<Application>();
  
   onWheel(event: WheelEvent) {
     event.preventDefault();
