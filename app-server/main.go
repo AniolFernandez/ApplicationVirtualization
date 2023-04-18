@@ -32,6 +32,7 @@ func main() {
     http.HandleFunc("/download", DownloadFile)
     http.HandleFunc("/upload", UploadFile)
     http.HandleFunc("/list", ListDirectory)
+    http.HandleFunc("/ping", PingHandler)
     cors := allowCors(http.DefaultServeMux)
     KeepAlive()
     //log.Fatal(http.ListenAndServeTLS("0.0.0.0:8443", "cert.pem", "key.pem", cors))

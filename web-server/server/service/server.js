@@ -3,7 +3,7 @@ const TIMEOUT = 60000; //1 min
 
 
 //Estructura que manté l'status de cada servidor d'apps
-const servers = {}
+const servers = {};
 
 //Elimina els servidors d'applicacions que no es reportin en l'interval.
 setInterval(() => {
@@ -27,18 +27,17 @@ module.exports = {
     },
 
     //Obtenció dels servidors actuals
-    getServers: function(admin){
-        if(admin){
-            svs = [];
-            for (const ip in servers) {
-                svs.push({
-                    ip: ip,
-                    cpu: servers[ip].cpu,
-                    ram: servers[ip].ram
-                })
-            }
-            return svs;
+    getServers: function(){
+        svs = [];
+        for (const ip in servers) {
+            svs.push({
+                ip: ip,
+                cpu: servers[ip].cpu,
+                ram: servers[ip].ram
+            })
         }
-        else return Array.from( servers.keys() ); //Usuaris
-    }
+        return svs;
+    },
+
+    getServerIps: () => {return Object.keys(servers)}
 }

@@ -42,11 +42,18 @@ func KeepAlive(){
 			req.Header.Set("Authorization", "Bearer "+token)
 			req.Header.Set("Content-Type", "application/json")
 			client := &http.Client{}
-			resp, _ := client.Do(req)
+			resp, err := client.Do(req)
+			if err != nil {
+				continue
+			}
 			defer resp.Body.Close()
 			ioutil.ReadAll(resp.Body) //Espera resposta
 			time.Sleep(SECONDS_BETWEEN_KEEPALIVE * time.Second)
 		}
 	}()
-	
+}
+
+//Test per latencia
+func PingHandler(w http.ResponseWriter, r *http.Request) {
+    w.WriteHeader(http.StatusOK)
 }

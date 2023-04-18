@@ -1,3 +1,5 @@
+import { State } from "../State";
+
 export class AppStream{
     constructor(
         public endpoint: string,
@@ -11,11 +13,8 @@ export class AppStream{
     private peerConnection!: RTCPeerConnection;
     public token: String = "";
 
-    private port = 8443;
-    private secure = "";
-
     public getApi(){
-        return `http${this.secure}://${this.endpoint}:${this.port}`
+        return `http${State.SECURE ? "s":""}://${this.endpoint}:${State.APPSERVER_PORT}`
     }
 
     public closeConnection(){
@@ -50,7 +49,7 @@ export class AppStream{
     }
 
     private startConnection(){
-        this.socket= new WebSocket(`ws${this.secure}://${this.endpoint}:${this.port}/ws`);
+        this.socket= new WebSocket(`ws${State.SECURE ? "s":""}://${this.endpoint}:${State.APPSERVER_PORT}/ws`);
         const config = {
             iceServers: [
             {

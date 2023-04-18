@@ -15,12 +15,8 @@ export class ServerAdminComponent implements OnDestroy {
 
   constructor(private http: HttpClient, private snackBar: SnackbarService) {
     const checkStatus = () => this.http.get('/server').subscribe(
-      (msg: any) => {
-        this.servers = msg;
-      },
-      () => { //Error al server
-        this.snackBar.Show("❌ No hi ha connexió amb el servidor");
-      }
+      (msg: any) => this.servers = msg,
+      () => this.snackBar.Show("❌ No hi ha connexió amb el servidor") //Error server
     );
     this.interval = setInterval(checkStatus, 15000);
     checkStatus();

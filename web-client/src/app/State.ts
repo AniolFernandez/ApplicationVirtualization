@@ -22,4 +22,7 @@ export class State {
             window.location.href = window.location.origin;
         }
     }
+    public static servers: any[] | null = null;
+    public static readonly APPSERVER_PORT = 8443;
+    public static readonly SECURE = false;
 }

@@ -20,9 +20,25 @@ router.post('/keepalive', async (req, res) => {
 //Obtenció dels servidors disponibles
 router.get('/', async (req, res) => {
     try {
-        res.json(appserverService.getServers(req.isAdmin));
+        if (req.isAdmin) {
+            res.json(appserverService.getServers());
+        }
+        else throw new Error("Unauthorized.")
+       
     }
     catch (err) {
+        res.json({});
+    }
+});
+
+
+//Obtenció del les adreçes dels servidors disponibles
+router.get('/getIps', async (req, res) => {
+    try {
+        res.json(appserverService.getServerIps());
+    }
+    catch (err) {
+        console.log(err);
         res.json([]);
     }
 });
