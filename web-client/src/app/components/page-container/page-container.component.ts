@@ -1,8 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { Application } from 'src/app/models/application';
+import { Component } from '@angular/core';
 import { State } from 'src/app/State';
-import { AppStream } from 'src/app/models/appStream';
-import { AppService } from 'src/app/services/app.service';
 
 @Component({
   selector: 'app-page-container',

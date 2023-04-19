@@ -53,7 +53,7 @@ export class AppService {
   openApp(app: Application) {
     if (!app.selected) {
       State.openApps.push(app);
-      State.openAppsStreams[app.name] = this.createAppStream(app);
+      this.createAppStream(app);
     }
     if (State.activeApp) {
       State.activeApp.active = false;
@@ -77,7 +77,12 @@ export class AppService {
     delete State.openAppsStreams[app.name];
   }
 
-  private createAppStream(app: Application): AppStream {
-    return new AppStream("192.168.56.101", () => this.closeApp(app));
+  private createAppStream(app: Application) {
+    //TODO: Demanar token al servidor passant la llista de servidors a State.servers (llista servers amb latencies)
+    //Fer que l'app stream envi el token i l'app escollida amb el seu nom
+    State.openAppsStreams[app.name] = new AppStream(() => this.closeApp(app));
+    setTimeout(() => {
+      State.openAppsStreams[app.name].startConnection("192.168.56.101");
+    }, 5000);
   }
 }

@@ -27,6 +27,10 @@ export class FsbrowserComponent {
     if (!fullpath) dir = this.directory!.fullpath + "/" + dir;
     this.directory = null; //Activa l'animació
     const api = State.openAppsStreams[State.activeApp!.name].getApi();
+    if(!api){
+      this.close();
+      return;
+    }
     fetch(`${api}/list?token=${State.openAppsStreams[State.activeApp!.name].token}&path=${dir}/`)
       .then(response => response.json())
       .then(data => {

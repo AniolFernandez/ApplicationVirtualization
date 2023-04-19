@@ -1,12 +1,8 @@
 import { State } from "../State";
 
 export class AppStream{
-    constructor(
-        public endpoint: string,
-        public onclose: any
-    ){
-        this.startConnection();
-    }
+    endpoint: string="";
+    constructor( public onclose: any){}
 
     public stream?: MediaStream;
     private socket!: WebSocket;
@@ -14,7 +10,9 @@ export class AppStream{
     public token: String = "";
 
     public getApi(){
-        return `http${State.SECURE ? "s":""}://${this.endpoint}:${State.APPSERVER_PORT}`
+        if(this.endpoint)
+            return `http${State.SECURE ? "s":""}://${this.endpoint}:${State.APPSERVER_PORT}`
+        return ""
     }
 
     public closeConnection(){
@@ -48,7 +46,8 @@ export class AppStream{
         }));
     }
 
-    private startConnection(){
+    public startConnection(endpoint: string){
+        this.endpoint=endpoint;
         this.socket= new WebSocket(`ws${State.SECURE ? "s":""}://${this.endpoint}:${State.APPSERVER_PORT}/ws`);
         const config = {
             iceServers: [
