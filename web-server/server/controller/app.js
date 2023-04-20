@@ -1,6 +1,8 @@
 const express = require('express');
+const jwt = require('../security/jwt')
 const appService = require('../service/app')
 const userService = require('../service/user')
+const serverService = require('../service/server')
 const router = express.Router();
 
 //Obtenció de les apps per a la seva configuració
@@ -19,7 +21,7 @@ router.get('/admin-list', async (req, res) => {
 //Obtenció de les apps disponibles per a un usuari visitant la pàgina
 router.get('/my-apps', async (req, res) => {
   try {
-    let filter = {
+    const filter = {
       isAdmin: req.isAdmin,
       user: req.authUser,
       role: req.authUser ? await userService.getUserRole(req.authUser) : null
@@ -48,6 +50,45 @@ router.post('/', async (req, res) => {
   }
   catch (err) {
     res.json({ error: err.message });
+  }
+});
+
+
+//Demana accés a una app a través del seu tag
+router.post('/:tag', async (req, res) => {
+  try {
+    //Comprova que hi hagi el payload amb els servidors
+    if (!req.body.servers || req.body.servers.length == 0) {
+      res.json({ error: "En aquests moments no hi ha servidors disponibles." });
+      return;
+    }
+
+    //Comprovem que l'usuari disposa d'accés a l'aplicació
+    const filter = {
+      isAdmin: req.isAdmin,
+      user: req.authUser,
+      role: req.authUser ? await userService.getUserRole(req.authUser) : null,
+      app: req.params.tag
+    }
+    if (!await appService.checkAuthorization(filter)) {
+      res.json({ error: "No disposes d'autorització per obrir aquesta aplicació." });
+      return;
+    }
+
+    //Obtenim el servidor al que delegar l'accés
+    const destinationServer = serverService.chooseServer(req.body.servers);
+
+    //Retornem el token
+    res.json({
+      server: destinationServer,
+      token: jwt.getAccessToken({
+        server: destinationServer,
+        app: req.params.tag
+      }, { expiresIn: '15s' })
+    });
+  }
+  catch {
+    res.json({ error: "Error l'obrir l'aplicació." });
   }
 });
 

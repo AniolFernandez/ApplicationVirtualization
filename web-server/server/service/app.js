@@ -161,4 +161,28 @@ module.exports = {
         //retornem les imatges
         return filteredApps;
     },
+
+    //Comprova si es té accés a una app
+    checkAuthorization: async function (filter) {
+        //Si és admin té accés a tot
+        if(filter.isAdmin) return true;
+
+        let canAccess = false;
+        
+        //Si no és admin comprovem que l'applicació estigui disponible
+        let query = `SELECT DISTINCT docker_image FROM app t0 
+                    LEFT JOIN role_has_app t1 ON t0.docker_image = t1.app_docker_image 
+                    WHERE docker_image = ? and (availableUnauth = 1
+                    ${filter.user?'OR availableAnyAuth = 1':''}
+                    ${filter.role!=null?'OR t1.role_id = ?':''})
+                    `;
+        await new Promise((resolve, reject) => {
+            db.query(query, [filter.app, filter.role], (error, results) => {
+                    canAccess = !error && results.length>0;
+                    resolve();
+                });
+        });
+
+        return canAccess;
+    },
 }

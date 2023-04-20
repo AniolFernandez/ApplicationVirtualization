@@ -27,7 +27,7 @@ module.exports = {
     },
 
     //Obtenció dels servidors actuals
-    getServers: function(){
+    getServers: function () {
         svs = [];
         for (const ip in servers) {
             svs.push({
@@ -39,5 +39,11 @@ module.exports = {
         return svs;
     },
 
-    getServerIps: () => {return Object.keys(servers)}
+    //Obtenció dels servidors (per a usuaris)
+    getServerIps: () => { return Object.keys(servers) },
+
+    //Escollir servidor preferit
+    chooseServer: function(servers){
+        return servers[0].server; // de moment sense cap lògica, agafem el que té menor latència
+    }
 }
