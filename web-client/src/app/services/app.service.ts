@@ -81,26 +81,14 @@ export class AppService {
     State.openAppsStreams[app.name] = new AppStream(() => this.closeApp(app));
     this.http.post(`/app/${app.image}`, { servers: State.servers }).subscribe(
       (msg: any) => {
-        if (msg.error) { //Error en el servidor
+        if (msg.error) //Error en el servidor
           this.snackBar.Show(`❌ ${msg.error.toString()}`);
-        }
-        else if(msg.token){
-          console.log(msg);
-        }
-
+        else if(msg.token && msg.server)
+          State.openAppsStreams[app.name].startConnection(msg.server, msg.token);
+        else
+          this.snackBar.Show(`❌ Error a l'obrir app.`)
       },
       () => this.snackBar.Show(`❌ No hi ha connexió amb el servidor`)
     );
-
-    //TODO: Demanar token al servidor passant la llista de servidors a State.servers (llista servers amb latencies)
-    //Fer que l'app stream envi el token i l'app escollida amb el seu nom
-    //1. Es demana al servidor per l'aplicació a obrir i s'envia la llista de sv
-
-    //2. Es rep un token i una ip o bé un null. en cas de tot ok s'iniciia la connexió.
-    /*
-    setTimeout(() => {
-      State.openAppsStreams[app.name].startConnection("192.168.56.101");
-    }, 5000);
-    */
   }
 }

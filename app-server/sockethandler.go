@@ -4,7 +4,6 @@ import (
     "fmt"
 	"log"
 	"net/http"
-//	"encoding/json"
     "encoding/base64"
     "github.com/gorilla/websocket"
 )
@@ -14,13 +13,11 @@ import (
     Gestió de la connexió d'un socket. Aquest socket pertany a una sola connexió d'un sol client.
     Tot el cicle de vida es manté dins aquesta funció:
     1. Upgrade d'HTTP a WS
-    2. TODO: Permisos
+    2. Check de permisos
     3. Arranc del docker assignant el port d'escolta local i volum
     4. Loop d'events (teclat, ratolí)
 */
 func SocketHandler(w http.ResponseWriter, r *http.Request) {
-    //var jsonRecv map[string]interface{}
-
     //*******
     //  1. Upgrade HTTP a WebSocket
     //*******
@@ -33,16 +30,20 @@ func SocketHandler(w http.ResponseWriter, r *http.Request) {
     log.Println("Client connectat.")
  
     //*******
-    //  2. TODO: AQUI CALDRÍA REBRE QUINA APP ENCENDRE I COMPROVAR ELS PERMISOS
+    //  2. REP QUINA APP ENCENDRE I COMPROVAR ELS PERMISOS
     //*******
-    /*
-    _, msg, err := socket.ReadMessage()
+    
+    _, accessToken, err := socket.ReadMessage()
     if err != nil {
-        log.Println("Error al llegir missatge", err)
+        log.Println("Error al llegir el token d'accés", err)
         return
     }
-    json.Unmarshal([]byte(msg), &jsonRecv)
-    */
+    appImage, ok := ProcessToken(string(accessToken))
+    if !ok {
+        log.Println("Error de procés amb el token. Finalitzant connexió.")
+        return
+    }
+    
 
     //*******
     //  3. S'encén el docker. Esperar a rebre un señal de que ja està actiu i estableix la connexió
@@ -63,7 +64,7 @@ func SocketHandler(w http.ResponseWriter, r *http.Request) {
     socket.WriteMessage(websocket.TextMessage, []byte(base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("{\"token\":\"%s\"}", token)))))
     defer close(dockerStopSignal)
     defer DeleteDirectory(fullPath)
-    go StartDockerImage("appvirt", portSocket, fullPath, dockerStopSignal)
+    go StartDockerImage(appImage, portSocket, fullPath, dockerStopSignal)
 
     
     
