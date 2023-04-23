@@ -40,7 +40,7 @@ func StartDockerImage(imageName string, port string, volume string, close chan s
         },
 	}, nil, nil, "")
 	if err != nil {
-		log.Println("Error en iniciar la imatge de docker", err)
+		log.Println("Error en crear el contenidor de la imatge de docker", err)
 		return
 	}
     display = display+1

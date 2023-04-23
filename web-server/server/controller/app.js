@@ -77,6 +77,10 @@ router.post('/:tag', async (req, res) => {
 
     //Obtenim el servidor al que delegar l'accés
     const destinationServer = serverService.chooseServer(req.body.servers);
+    if (destinationServer == null) {
+      res.json({ error: "No hi ha cap servidor d'applicacions disponible amb temps de resposta acceptable." });
+      return;
+    }
 
     //Retornem el token
     res.json({
@@ -84,7 +88,7 @@ router.post('/:tag', async (req, res) => {
       token: jwt.getAccessToken({
         server: destinationServer,
         app: req.params.tag
-      }, { expiresIn: '15s' })
+      }, { expiresIn: '30s' })
     });
   }
   catch {

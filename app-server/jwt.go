@@ -30,7 +30,7 @@ func ProcessToken(access_token string) (string, bool) {
 		return secret, nil //Retorna el secret si el mètode de signatura és correcte
 	})
 	if err != nil {
-		log.Println("Rebut token invàlid.")
+		log.Println("Rebut token invàlid. ",err)
 		return "", false
 	}
 

@@ -3,7 +3,8 @@ const secret = 'q@4iMlcS!AnMC74ZfxB0GNh623VN!Qo*Jf$6wuKBFZ*f0doBJ1';
 
 //Generador de token
 const getAccessToken = (payload, options) => {
-    return jwt.sign(payload, secret, { 
+    const iat = Math.floor(Date.now() / 1000) - 1;
+    return jwt.sign({...payload, iat}, secret, { 
         ...(options && options), 
         algorithm: 'HS256', 
     });

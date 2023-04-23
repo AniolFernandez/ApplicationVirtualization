@@ -43,7 +43,17 @@ module.exports = {
     getServerIps: () => { return Object.keys(servers) },
 
     //Escollir servidor preferit
-    chooseServer: function(servers){
-        return servers[0].server; // de moment sense cap lògica, agafem el que té menor latència
+    chooseServer: function (llistatMs) {
+        //Filtrem aquells servidors que tenen un temps de resposta acceptable
+        const acceptables = llistatMs.filter(x => x.msToResponse < 250).map(x => x.server);
+
+        //Obtenim servidor amb la major quantitat de ram disponible
+        let servidorEscollit = null;
+        acceptables.forEach((ip) =>{
+            if (servers[ip] && (servidorEscollit==null || servers[ip].ram > servers[servidorEscollit].ram))
+                servidorEscollit = ip;
+        })
+
+        return servidorEscollit;
     }
 }
