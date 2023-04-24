@@ -92,7 +92,7 @@ router.post('/:tag', async (req, res) => {
     });
   }
   catch {
-    res.json({ error: "Error l'obrir l'aplicació." });
+    res.json({ error: "Error a l'obrir l'aplicació." });
   }
 });
 

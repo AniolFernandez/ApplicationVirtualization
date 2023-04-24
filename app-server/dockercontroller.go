@@ -1,15 +1,24 @@
 package main
 
 import (
+    "fmt"
+    "time"
 	"log"
 	"net"
+    "net/http"
 	"bufio"
 	"strconv"
     "context"
+    "encoding/json"
 	"github.com/docker/docker/api/types"
     "github.com/docker/docker/api/types/container"
     "github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/client"
+)
+
+const (
+	repo   = "localhost:5000"
+	pullDelay = 1 * time.Minute
 )
 
 var display int=99
@@ -26,7 +35,7 @@ func StartDockerImage(imageName string, port string, volume string, close chan s
 
 	//Inicialitza el contenidor
 	resp, err := dockerCli.ContainerCreate(context.Background(), &container.Config{
-		Image: imageName,
+		Image: fmt.Sprintf("%s/%s", repo, imageName),
 		Env: []string{"PROXY_PORT="+port,"DISPLAY=:"+strconv.Itoa(display)},
 	}, &container.HostConfig{
 		NetworkMode: container.NetworkMode("host"),
@@ -136,4 +145,46 @@ func DockerProxy(WSinTCPout chan string, TCPinWSout chan string, close chan stru
             }
         }
     }
+}
+
+func UpdateImages() {
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		log.Fatalf("Error en crear el client de docker: %s", err)
+	}
+	go func(){
+        for {
+            if err := pullImages(cli); err != nil {
+                log.Printf("Error en l'obtenció d'imatges: %s", err)
+            }
+            time.Sleep(pullDelay)
+        }
+    }()
+}
+
+func pullImages(cli *client.Client) error {
+	// Obté les imatges del repositori
+	imageListURL := fmt.Sprintf("http://%s/v2/_catalog", repo)
+	resp, err := http.Get(imageListURL)
+	if err != nil {
+		return fmt.Errorf("Error en obtenir llsitat d'imatges: %s", err)
+	}
+	defer resp.Body.Close()
+
+	var imageListResponse struct {
+		Repositories []string `json:"repositories"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&imageListResponse); err != nil {
+		return fmt.Errorf("Error: %s", err)
+	}
+
+	// Pull each image from the repository
+	for _, imageName := range imageListResponse.Repositories {
+        imageFullName := fmt.Sprintf("%s/%s", repo, imageName)
+        _, err = cli.ImagePull(context.Background(), imageFullName, types.ImagePullOptions{})
+        if err != nil {
+            return fmt.Errorf("Ha fallat l'obtenció de %s: %s", imageFullName, err)
+        }
+	}
+	return nil
 }

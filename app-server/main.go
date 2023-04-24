@@ -27,7 +27,6 @@ func allowCors(next http.Handler) http.Handler {
 
  
 func main() {
-    InitializeVolumes()
     http.HandleFunc("/ws", SocketHandler)
     http.HandleFunc("/download", DownloadFile)
     http.HandleFunc("/upload", UploadFile)
@@ -35,6 +34,8 @@ func main() {
     http.HandleFunc("/ping", PingHandler)
     cors := allowCors(http.DefaultServeMux)
     KeepAlive()
+    InitializeVolumes()
+    UpdateImages()
     //log.Fatal(http.ListenAndServeTLS("0.0.0.0:8443", "cert.pem", "key.pem", cors))
     log.Fatal(http.ListenAndServe("0.0.0.0:8443", cors))
 }
