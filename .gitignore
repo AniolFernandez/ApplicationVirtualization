@@ -4,3 +4,4 @@ node_modules
 *.pem
 test
 mysql-data
+web-server/server/web-client

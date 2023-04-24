@@ -11,7 +11,7 @@ import (
 )
 
 const SECONDS_BETWEEN_KEEPALIVE = 10 //10 s
-var API = "http://192.168.56.1:3000/server/"
+var API = "http://localhost:3000/server/"
 var token = GetAccesToken()
 
 type Status struct {

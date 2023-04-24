@@ -1,5 +1,5 @@
 #Imatge original de node
-FROM node:16
+FROM node:18
 
 #Establim el directori de l'aplicació
 WORKDIR /app

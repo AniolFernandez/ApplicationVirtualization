@@ -16,6 +16,9 @@ const app = express()
   .use(cors({origin: '*'}))//Habilita l'accés des de qualsevol origen
   .use(bodyParser.json());//Parse body a JSON
 
+//Contingut estàtic de la web
+app.use(express.static('web-client'));
+
 //ROUTER
 app.use('/user', usersRouter);
 app.use('/role', roleRouter);

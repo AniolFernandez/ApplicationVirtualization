@@ -4,7 +4,7 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpHeaders } from '@angular
 @Injectable()
 export class ApiInterceptor implements HttpInterceptor {
 
-    private static API_ENDPOINT: string = "http://localhost:3000";//window.location.origin;
+    private static API_ENDPOINT: string = window.location.origin; //"http://localhost:3000";
 
     //Intercepta cada crida a l'API per a afegir-hi els tokens necessàris + l'endpoint correcte
     intercept(req: HttpRequest<any>, next: HttpHandler) {

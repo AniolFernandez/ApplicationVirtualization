@@ -19,7 +19,7 @@ setInterval(() => {
 module.exports = {
     //Status d'un servidor
     keepalive: function (ip, { ram, cpu }) {
-        servers[ip] = {
+        servers[ip.replace("127.0.0.1","192.168.56.101")] = {
             lastTick: Date.now(),
             ram: ram,
             cpu: cpu

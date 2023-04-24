@@ -55,7 +55,7 @@ export class AppStream {
         }));
     }
 
-    public startConnection(endpoint: string, token: string) { //Pendent enviar token i que appserver validi
+    public startConnection(endpoint: string, token: string) {
         this.endpoint = endpoint;
         this.socket = new WebSocket(`ws${State.SECURE ? "s" : ""}://${this.endpoint}:${State.APPSERVER_PORT}/ws`);
 
