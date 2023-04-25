@@ -16,11 +16,7 @@ import (
 	"github.com/docker/docker/client"
 )
 
-const (
-	repo   = "localhost:5000"
-	pullDelay = 1 * time.Minute
-)
-
+const pullDelay = 1 * time.Minute
 var display int=99
 
 //Ens permet arrancar docker de forma asyncrona
@@ -35,7 +31,7 @@ func StartDockerImage(imageName string, port string, volume string, close chan s
 
 	//Inicialitza el contenidor
 	resp, err := dockerCli.ContainerCreate(context.Background(), &container.Config{
-		Image: fmt.Sprintf("%s/%s", repo, imageName),
+		Image: fmt.Sprintf("%s/%s", GLOBAL.Configuration.REPOSITORY, imageName),
 		Env: []string{"PROXY_PORT="+port,"DISPLAY=:"+strconv.Itoa(display)},
 	}, &container.HostConfig{
 		NetworkMode: container.NetworkMode("host"),
@@ -164,7 +160,7 @@ func UpdateImages() {
 
 func pullImages(cli *client.Client) error {
 	// Obté les imatges del repositori
-	imageListURL := fmt.Sprintf("http://%s/v2/_catalog", repo)
+	imageListURL := fmt.Sprintf("http://%s/v2/_catalog", GLOBAL.Configuration.REPOSITORY)
 	resp, err := http.Get(imageListURL)
 	if err != nil {
 		return fmt.Errorf("Error en obtenir llsitat d'imatges: %s", err)
@@ -180,7 +176,7 @@ func pullImages(cli *client.Client) error {
 
 	// Pull each image from the repository
 	for _, imageName := range imageListResponse.Repositories {
-        imageFullName := fmt.Sprintf("%s/%s", repo, imageName)
+        imageFullName := fmt.Sprintf("%s/%s", GLOBAL.Configuration.REPOSITORY, imageName)
         _, err = cli.ImagePull(context.Background(), imageFullName, types.ImagePullOptions{})
         if err != nil {
             return fmt.Errorf("Ha fallat l'obtenció de %s: %s", imageFullName, err)

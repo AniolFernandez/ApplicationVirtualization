@@ -14,8 +14,6 @@ import (
 	"path/filepath"
 )
 
-const ROOT = "/tmp/appvirt/"
-
 type Directory struct {
 	Fullpath string `json:"fullpath"`
 	Parent string `json:"parent"`
@@ -40,19 +38,19 @@ func InitializeDirectory() (string, string) {
 	var dir string
 	for{
 		dir = _genRandomBytes()
-		if _, err := os.Stat(ROOT+dir); err != nil {
+		if _, err := os.Stat(GLOBAL.Configuration.FSROOT+dir); err != nil {
 			break //No existeix el dir; podem continuar
 		}
 	}
-	os.MkdirAll(ROOT+dir, os.ModePerm)
-	exec.Command("chown", "-R", "1000:1000", ROOT+dir).Run()
-	return dir, ROOT+dir
+	os.MkdirAll(GLOBAL.Configuration.FSROOT+dir, os.ModePerm)
+	exec.Command("chown", "-R", "1000:1000", GLOBAL.Configuration.FSROOT+dir).Run()
+	return dir, GLOBAL.Configuration.FSROOT+dir
 }
 
 //Cleanup i recreació
 func InitializeVolumes(){
-	DeleteDirectory(ROOT)
-	os.MkdirAll(ROOT, os.ModePerm)
+	DeleteDirectory(GLOBAL.Configuration.FSROOT)
+	os.MkdirAll(GLOBAL.Configuration.FSROOT, os.ModePerm)
 }
 
 //Elimina les dades del directori
@@ -77,7 +75,7 @@ func DownloadFile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Creació del path complert del recurs
-	pathComplert := _sanitizePath(ROOT + token + path + fitxer)
+	pathComplert := _sanitizePath(GLOBAL.Configuration.FSROOT + token + path + fitxer)
 	log.Println("Downloading: ",pathComplert)
 
 	//Servim el fitxer
@@ -131,7 +129,7 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 
 
     // Guardem el fitxer
-	sanitizedPath := _sanitizePath(ROOT + token + path)
+	sanitizedPath := _sanitizePath(GLOBAL.Configuration.FSROOT + token + path)
     filename := filepath.Join(sanitizedPath, handler.Filename)
     data, err := ioutil.ReadAll(file)
     if err != nil {
@@ -163,7 +161,7 @@ func ListDirectory(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Creació del path complert del recurs a llistar
-	pathComplert := _sanitizePath(ROOT + token + path)
+	pathComplert := _sanitizePath(GLOBAL.Configuration.FSROOT + token + path)
 
 
 	//Obtenim els continguts del directori

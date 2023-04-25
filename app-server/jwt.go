@@ -8,7 +8,6 @@ import (
 	"fmt"
 )
 
-var secret = []byte("q@4iMlcS!AnMC74ZfxB0GNh623VN!Qo*Jf$6wuKBFZ*f0doBJ1")
 var ip = GetIPAddress()
 
 //Obté token d'accés per al SW
@@ -16,7 +15,7 @@ func GetAccesToken() string {
 	tokenString, _ := jwt.NewWithClaims(
 		jwt.SigningMethodHS256, 
 		jwt.MapClaims{"user": "admin",},
-	).SignedString(secret)
+	).SignedString([]byte(GLOBAL.Configuration.SECRET))
 	return tokenString
 }
 
@@ -27,7 +26,7 @@ func ProcessToken(access_token string) (string, bool) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("invalid signing method")
 		}
-		return secret, nil //Retorna el secret si el mètode de signatura és correcte
+		return []byte(GLOBAL.Configuration.SECRET), nil //Retorna el secret si el mètode de signatura és correcte
 	})
 	if err != nil {
 		log.Println("Rebut token invàlid. ",err)

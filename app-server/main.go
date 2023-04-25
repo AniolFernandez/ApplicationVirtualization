@@ -25,17 +25,23 @@ func allowCors(next http.Handler) http.Handler {
     })
 }
 
+//Inicialitza les funcions i processos
+func Initialize(){
+    LoadConfig()
+    KeepAlive()
+    InitializeVolumes()
+    UpdateImages()
+}
+
  
 func main() {
+    Initialize()
     http.HandleFunc("/ws", SocketHandler)
     http.HandleFunc("/download", DownloadFile)
     http.HandleFunc("/upload", UploadFile)
     http.HandleFunc("/list", ListDirectory)
     http.HandleFunc("/ping", PingHandler)
     cors := allowCors(http.DefaultServeMux)
-    KeepAlive()
-    InitializeVolumes()
-    UpdateImages()
     //log.Fatal(http.ListenAndServeTLS("0.0.0.0:8443", "cert.pem", "key.pem", cors))
     log.Fatal(http.ListenAndServe("0.0.0.0:8443", cors))
 }

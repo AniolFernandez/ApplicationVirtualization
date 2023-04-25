@@ -11,8 +11,6 @@ import (
 )
 
 const SECONDS_BETWEEN_KEEPALIVE = 10 //10 s
-var API = "http://localhost:3000/server/"
-var token = GetAccesToken()
 
 type Status struct {
 	RAM float64 `json:"ram"`
@@ -38,8 +36,8 @@ func KeepAlive(){
 	go func(){
 		for {
 			payload, _ := json.Marshal(getStatus())
-			req, _ := http.NewRequest("POST", API+"keepalive", bytes.NewBuffer(payload))
-			req.Header.Set("Authorization", "Bearer "+token)
+			req, _ := http.NewRequest("POST", GLOBAL.Configuration.SERVER+"/server/keepalive", bytes.NewBuffer(payload))
+			req.Header.Set("Authorization", "Bearer "+TOKEN)
 			req.Header.Set("Content-Type", "application/json")
 			client := &http.Client{}
 			resp, err := client.Do(req)
