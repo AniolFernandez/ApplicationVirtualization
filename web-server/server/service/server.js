@@ -1,6 +1,7 @@
-const REFRESH = 10000; //10/min
+const REFRESH = 10000; //10 per cada minut
 const TIMEOUT = 60000; //1 min
-
+const MS_ACCEPTABLES = 250;
+const LOCAL_ADDRESS = process.env.LOCAL_ADDRESS || '192.168.56.101';
 
 //Estructura que manté l'status de cada servidor d'apps
 const servers = {};
@@ -19,7 +20,7 @@ setInterval(() => {
 module.exports = {
     //Status d'un servidor
     keepalive: function (ip, { ram, cpu }) {
-        servers[ip.replace("127.0.0.1","192.168.56.101")] = {
+        servers[ip.replace("127.0.0.1", LOCAL_ADDRESS)] = {
             lastTick: Date.now(),
             ram: ram,
             cpu: cpu
@@ -44,13 +45,19 @@ module.exports = {
 
     //Escollir servidor preferit
     chooseServer: function (llistatMs) {
-        //Filtrem aquells servidors que tenen un temps de resposta acceptable
-        const acceptables = llistatMs.filter(x => x.msToResponse < 250).map(x => x.server);
+        //Busquem llindar inferior
+        const minLat = llistatMs.reduce((min, x) => x.msToResponse < min ? x.msToResponse : min, Number.MAX_SAFE_INTEGER);
+
+        //Obtenim llindar màxim de temps de resposta (multiples de MS_ACCEPTABLES) i com a mínim MS_ACCEPTABLES
+        const llindar = Math.max(MS_ACCEPTABLES, Math.ceil(minLat / MS_ACCEPTABLES) * MS_ACCEPTABLES);
+
+        //Filtrem aquells servidors que tenen un temps de resposta inferior al llindar
+        const acceptables = llistatMs.filter(x => x.msToResponse < llindar).map(x => x.server);
 
         //Obtenim servidor amb la major quantitat de ram disponible
         let servidorEscollit = null;
-        acceptables.forEach((ip) =>{
-            if (servers[ip] && (servidorEscollit==null || servers[ip].ram > servers[servidorEscollit].ram))
+        acceptables.forEach((ip) => {
+            if (servers[ip] && (servidorEscollit == null || servers[ip].ram > servers[servidorEscollit].ram))
                 servidorEscollit = ip;
         })
 
