@@ -1,3 +1,6 @@
+![Arquitectura](/docs/images/webcli.png)
+
+
 # WebClient
 
 Aquest projecte utilitza Angular 15.1.6.

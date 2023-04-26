@@ -1,0 +1,1 @@
+![Arquitectura](/docs/images/swdbreg.png)

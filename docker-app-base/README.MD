@@ -1,3 +1,5 @@
+![Arquitectura](/docs/images/appcontainer.png)
+
 # Imatge base per al virtualitzador d'aplicacions
 Pots trobar aquesta imatge de forma pública en el següent repositori a Docker Hub: [imatge-base](https://hub.docker.com/layers/aniolfdz/appvirt/base/images/sha256-d0b92acddb3df6aa38dd371bd4325f07c01daf591494b0294599a1304f93b761?context=explore)
 
