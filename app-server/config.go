@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-    "github.com/go-ini/ini"
+  "github.com/go-ini/ini"
 )
 
 type Config struct {
