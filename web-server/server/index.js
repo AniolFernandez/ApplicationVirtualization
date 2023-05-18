@@ -33,7 +33,7 @@ if (SECURE) {
   https.createServer({
     key: fs.readFileSync('server.key'),
     cert: fs.readFileSync('server.cert'),
-  }, app).listen(port, "0.0.0.0", () => console.log(`Server listening at http://0.0.0.0:${port}`));
+  }, app).listen(port, "0.0.0.0", () => console.log(`Iniciat https://0.0.0.0:${port}`));
 }
 else
-  app.listen(port, "0.0.0.0", () => console.log(`Server listening at http://0.0.0.0:${port}`));
+  app.listen(port, "0.0.0.0", () => console.log(`Iniciat http://0.0.0.0:${port}`));
