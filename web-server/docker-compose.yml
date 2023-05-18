@@ -24,9 +24,7 @@ services:
 
   #WebServer
   webserver:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: aniolfdz/appvirt:web
     restart: always
     environment:
       DB_HOST: 127.0.0.1
@@ -34,7 +32,7 @@ services:
       DB_PASSWORD: root
       DB_DATABASE: appvirt
       ADMIN_PW: admin 
-      LOCAL_ADDRESS: 192.168.1.67
+      LOCAL_ADDRESS: 192.168.56.101
       REGISTRY_HOST: localhost:5000
     network_mode: "host"
     depends_on:
