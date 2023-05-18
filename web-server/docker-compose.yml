@@ -24,10 +24,7 @@ services:
 
   #WebServer
   webserver:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    #image: aniolfdz/appvirt:web
+    image: aniolfdz/appvirt:web
     restart: always
     environment:
       DB_HOST: 127.0.0.1
