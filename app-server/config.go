@@ -10,7 +10,8 @@ type Config struct {
         SERVER		string `ini:"SERVER"`
         REPOSITORY	string `ini:"REPOSITORY"`
         SECRET 		string `ini:"SECRET"`
-		FSROOT		string `ini:"FSROOT"`
+		    FSROOT		string `ini:"FSROOT"`
+        SECURE		bool `ini:"SECURE"`
     } `ini:"Configuration"`
 }
 
@@ -19,17 +20,17 @@ var TOKEN string
 
 //Inicialitza la configuració
 func LoadConfig() {
-    cfg, err := ini.Load("config.ini")
-    if err != nil {
+  cfg, err := ini.Load("config.ini")
+  if err != nil {
 		panic(err)
-    }
+  }
 
-    err = cfg.MapTo(&GLOBAL)
-    if err != nil {
+  err = cfg.MapTo(&GLOBAL)
+  if err != nil {
 		panic(err)
-    }
+  }
 
 	TOKEN = GetAccesToken()
-
-    log.Printf("Loaded config:\n%+v\n", GLOBAL)
+  
+  log.Printf("Loaded config:\n%+v\n", GLOBAL)
 }

@@ -24,5 +24,5 @@ export class State {
     }
     public static servers: any[] | null = null;
     public static readonly APPSERVER_PORT = 8443;
-    public static readonly SECURE = false;
+    public static readonly SECURE = window.location.protocol === "https:";
 }

@@ -24,7 +24,10 @@ services:
 
   #WebServer
   webserver:
-    image: aniolfdz/appvirt:web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #image: aniolfdz/appvirt:web
     restart: always
     environment:
       DB_HOST: 127.0.0.1
@@ -37,6 +40,9 @@ services:
     network_mode: "host"
     depends_on:
       - mysql
+    volumes:
+      - ./server.cert:/app/server.cert
+      - ./server.key:/app/server.key
 
 volumes:
   db:

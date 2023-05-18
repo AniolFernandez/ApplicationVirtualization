@@ -42,6 +42,9 @@ func main() {
     http.HandleFunc("/list", ListDirectory)
     http.HandleFunc("/ping", PingHandler)
     cors := allowCors(http.DefaultServeMux)
-    //log.Fatal(http.ListenAndServeTLS("0.0.0.0:8443", "cert.pem", "key.pem", cors))
-    log.Fatal(http.ListenAndServe("0.0.0.0:8443", cors))
+    if GLOBAL.Configuration.SECURE {
+        log.Fatal(http.ListenAndServeTLS("0.0.0.0:8443", "server.cert", "server.key", cors))
+    } else {
+        log.Fatal(http.ListenAndServe("0.0.0.0:8443", cors))
+    }
 }

@@ -4,6 +4,7 @@ import (
     "bytes"
     "encoding/json"
     "net/http"
+	"crypto/tls"
 	"io/ioutil"
 	"runtime"
 	"github.com/shirou/gopsutil/cpu"
@@ -33,13 +34,19 @@ func getStatus() Status {
 
 //Funció per reportar l'status del servidor
 func KeepAlive(){
+	
 	go func(){
 		for {
+			tr := &http.Transport{
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			}
+			client := &http.Client{Transport: tr}
+			
 			payload, _ := json.Marshal(getStatus())
 			req, _ := http.NewRequest("POST", GLOBAL.Configuration.SERVER+"/server/keepalive", bytes.NewBuffer(payload))
 			req.Header.Set("Authorization", "Bearer "+TOKEN)
 			req.Header.Set("Content-Type", "application/json")
-			client := &http.Client{}
+			
 			resp, err := client.Do(req)
 			if err != nil {
 				continue
