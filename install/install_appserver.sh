@@ -1,12 +1,10 @@
 #!/bin/bash
-
-
 if [ "$(id -u)" -ne 0 ]; then
     echo "Executa'm com a root."
     exit 1
 fi
 
-mkdir appserver || { echo "Falta de permisos"; exit 1 }
+mkdir appserver
 cd appserver
 
 
@@ -20,7 +18,11 @@ read -p "Escriu el path on muntar el sistema de fitxers virtual [Per defecte: /t
 path=${path:-"/tmp/appvirt/"}
 
 #Descarregar el binari
-wget https://raw.githubusercontent.com/AniolFernandez/ApplicationVirtualization/main/app-server/appserver_linux_amd64 -O appserver || { echo "No s'ha pogut instal·lar"; exit 1 }
+wget https://raw.githubusercontent.com/AniolFernandez/ApplicationVirtualization/main/app-server/appserver_linux_amd64 -O appserver
+if [[ $? -gt 0 ]]; then
+    echo "No s'ha pogut instal·lar"
+    exit 1
+fi
 chmod +x appserver
 
 #Comprova si és connexió segura
