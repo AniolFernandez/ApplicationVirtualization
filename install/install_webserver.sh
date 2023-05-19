@@ -112,7 +112,7 @@ case $sino in
         else
             dbhost="127.0.0.1"
         fi
-        if [ -n "$registry" ]; then
+        if [ -z "$registry" ]; then
             read -p "Escriu el host on es situa el registre: [Per defecte: localhost:5000]" dbhost
             reghost=${reghost:-"localhost:5000"}
         else
