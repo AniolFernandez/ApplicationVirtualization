@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const secret = 'q@4iMlcS!AnMC74ZfxB0GNh623VN!Qo*Jf$6wuKBFZ*f0doBJ1';
+const secret = process.env.SECRET || 'q@4iMlcS!AnMC74ZfxB0GNh623VN!Qo*Jf$6wuKBFZ*f0doBJ1';
 
 //Generador de token
 const getAccessToken = (payload, options) => {
