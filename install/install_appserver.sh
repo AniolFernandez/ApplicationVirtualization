@@ -43,3 +43,5 @@ EOF
 
 echo "Fet!"
 ls -l
+
+exit 0
