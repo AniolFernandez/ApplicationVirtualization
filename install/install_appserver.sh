@@ -17,6 +17,16 @@ repo=${repo:-"localhost:5000"}
 read -p "Escriu el path on muntar el sistema de fitxers virtual [Per defecte: /tmp/appvirt/]: " path 
 path=${path:-"/tmp/appvirt/"}
 
+#Certificat autosignat
+if [[ $url == https://* ]]; then
+    echo "Estàs usant connexió segura i requereixes certificat"
+    read -p "Vols generar automàticament el certificat X.509? [S/n]: " sino
+    case $sino in
+        [Nn]* ) echo "No s'ha generat el certificat. Siusplau, introdueix el teu propi certificat i clau en el directori appserver amb el nom `server.cert` i `server.key`";;
+        * ) apt-get install openssl -y > /dev/null; openssl req -x509 -newkey rsa:4096 -nodes -keyout server.key -out server.cert -days 365 -subj "/C=ES/ST=Catalunya/L=Girona/O=UdG/OU=TFG/CN=appvirt.test";;
+    esac
+fi
+
 #Descarregar el binari
 wget https://raw.githubusercontent.com/AniolFernandez/ApplicationVirtualization/main/app-server/appserver_linux_amd64 -O appserver
 if [[ $? -gt 0 ]]; then
