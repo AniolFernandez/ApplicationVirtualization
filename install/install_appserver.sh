@@ -44,6 +44,8 @@ EOF
 
 
 echo "Fet!"
+pwd
 ls -l
 
+rm "$0"
 exit 0
