@@ -20,6 +20,7 @@ wget https://raw.githubusercontent.com/AniolFernandez/ApplicationVirtualization/
 ```
 
 Un cop instal·lat el servei, només resta d'afegir-hi imatges d'aplicació. Pot veure'n exemples a [/docker-app-base/app-examples](/docker-app-base/app-examples)
+
 ## Instal·lació del servidor d'aplicacions
 Situa't al directori d'instal·lació i executa la següent comanda:
 

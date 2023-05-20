@@ -100,6 +100,8 @@ case $sino in
         secret=$(openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c 32)
         read -p "Escriu la contrasenya per a l'usuari administrador [Per defecte: admin]: " webpass 
         webpass=${webpass:-"admin"} 
+        read -p "Escriu el port del servei: [Per defecte: 3000]: " port 
+        port=${port:-"3000"} 
         read -p "Escriu l'adreça IP pública del servei: [Per defecte: 127.0.0.1]: " pubip 
         pubip=${pubip:-"127.0.0.1"} 
         if [ -z "$mysql" ]; then
@@ -146,6 +148,7 @@ case $sino in
       DB_DATABASE: appvirt
       ADMIN_PW: $webpass 
       LOCAL_ADDRESS: $pubip
+      PORT: $port
       REGISTRY_HOST: $reghost
       SECRET: $secret
       $http
