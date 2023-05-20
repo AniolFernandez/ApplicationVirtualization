@@ -52,6 +52,15 @@ FSROOT = $path
 SECURE = $https
 EOF
 
+#Permetre registres inseguurs
+cat << EOF > /etc/docker/daemon.json
+{
+  "insecure-registries": ["$repo"]
+}
+EOF
+service docker restart
+
+
 
 echo "Fet!"
 pwd
