@@ -33,9 +33,13 @@ func Initialize(){
     UpdateImages()
 }
 
+func RedirectHandler(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, GLOBAL.Configuration.SERVER, http.StatusFound)
+}
  
 func main() {
     Initialize()
+    http.HandleFunc("/", RedirectHandler)
     http.HandleFunc("/ws", SocketHandler)
     http.HandleFunc("/download", DownloadFile)
     http.HandleFunc("/upload", UploadFile)
