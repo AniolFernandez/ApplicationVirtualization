@@ -1,6 +1,6 @@
 const REFRESH = 10000; //10 per cada minut
 const TIMEOUT = 60000; //1 min
-const MS_ACCEPTABLES = 250;
+const MS_ACCEPTABLES = 100;
 const LOCAL_ADDRESS = process.env.LOCAL_ADDRESS || '192.168.56.101';
 
 //Estructura que manté l'status de cada servidor d'apps
