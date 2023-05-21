@@ -12,6 +12,7 @@ type Config struct {
         SECRET 		string `ini:"SECRET"`
 		    FSROOT		string `ini:"FSROOT"`
         SECURE		bool `ini:"SECURE"`
+        DRI		bool `ini:"DRI"`
     } `ini:"Configuration"`
 }
 

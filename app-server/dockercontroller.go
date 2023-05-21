@@ -29,6 +29,24 @@ func StartDockerImage(imageName string, port string, volume string, close chan s
 		return
 	}
 
+    //Punts de muntatje
+    mounts := []mount.Mount{
+        {
+            Type:   mount.TypeBind,
+            Source: volume,
+            Target: "/SHARED",
+        },
+    }
+    
+    if GLOBAL.Configuration.DRI {
+        driMount := mount.Mount{
+            Type:   mount.TypeBind,
+            Source: "/dev/dri",
+            Target: "/dev/dri",
+        }
+        mounts = append(mounts, driMount)
+    }
+
 	//Inicialitza el contenidor
 	resp, err := dockerCli.ContainerCreate(context.Background(), &container.Config{
 		Image: fmt.Sprintf("%s/%s", GLOBAL.Configuration.REPOSITORY, imageName),
@@ -36,13 +54,7 @@ func StartDockerImage(imageName string, port string, volume string, close chan s
 	}, &container.HostConfig{
 		NetworkMode: container.NetworkMode("host"),
         AutoRemove:  true,
-        Mounts: []mount.Mount{
-            {
-                Type:   mount.TypeBind,
-                Source: volume,
-                Target: "/SHARED",
-            },
-        },
+        Mounts: mounts,
 	}, nil, nil, "")
 	if err != nil {
 		log.Println("Error en crear el contenidor de la imatge de docker", err)

@@ -16,6 +16,12 @@ read -p "Escriu el host i port del repositori d'imatges [Per defecte: localhost:
 repo=${repo:-"localhost:5000"} 
 read -p "Escriu el path on muntar el sistema de fitxers virtual [Per defecte: /tmp/appvirt/]: " path 
 path=${path:-"/tmp/appvirt/"}
+read -p "Vols utilitzar DRI (Direct Rendering Infrastructure)? [S/n]: " sino
+dri="true"
+case $sino in
+    [Nn]* ) dri="false" ;;
+    * ) dri="true";;
+esac
 
 #Certificat autosignat
 if [[ $url == https://* ]]; then
@@ -50,6 +56,7 @@ REPOSITORY = $repo
 SECRET = $secret
 FSROOT = $path
 SECURE = $https
+DRI = $dri
 EOF
 
 #Permetre registres inseguurs
