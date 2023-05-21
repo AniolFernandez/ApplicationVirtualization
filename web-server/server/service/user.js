@@ -1,4 +1,4 @@
-const db = require('../db');
+const userRepository = require('../repository/user')
 const jwt = require('../security/jwt')
 const adminUser = 'admin';
 const adminPass = process.env.ADMIN_PW || 'admin';
@@ -10,15 +10,7 @@ function _computeHash(string, salt) {
 }
 
 async function _goodLoginCredentials(username, password) {
-    const results = await new Promise((resolve, reject) => {
-        db.query('SELECT count(*) as count FROM user WHERE username = ? and password = ?', [username, _computeHash(password, username)], (error, results) => {
-            if (error) {
-                console.error('Error al consultar la bdd:', error);
-                reject('Error al consultar la bdd');
-            }
-            resolve(results);
-        });
-    });
+    const results = await userRepository.countUsernamesAndPassword(username,_computeHash(password, username));
     return results[0].count > 0;
 }
 
@@ -34,45 +26,19 @@ module.exports = {
     //Existeix usuari 
     existeixUsuari: async function (username) {
         if (username == adminUser) return true; //default admin user
-        const results = await new Promise((resolve, reject) => {
-            db.query('SELECT count(*) as count FROM user WHERE username = ?', [username], (error, results) => {
-                if (error) {
-                    console.error('Error al consultar la bdd:', error);
-                    reject('Error al consultar la bdd');
-                }
-                resolve(results);
-            });
-        });
+        const results = await userRepository.countUsernames(username);
         return results[0].count > 0;
     },
 
     //Registrar usuari
     registrarUsuari: async function (username, password, email) {
-        const results = await new Promise((resolve, reject) => {
-            db.query('INSERT INTO user (username, email, password) VALUES (?, ?, ?);', [username, email, _computeHash(password, username)], (error, results) => {
-                if (error) {
-                    cconsole.error("Error al signup: ", error);
-                    reject('Error al signup');
-                }
-                resolve(results);
-            });
-        });
+        const results = await userRepository.addUser(username, email, _computeHash(password, username));
         return results.affectedRows == 1;
     },
 
     //Obtenció llistat usuaris
     getUsers: async function () {
-        const results = await new Promise((resolve, reject) => {
-            db.query(`SELECT username, email, DATE_FORMAT(create_time, \'%d/%m/%Y %H:%i:%s\') create_time, role_id role
-                      FROM user
-                      ORDER BY create_time DESC;`, (error, results) => {
-                if (error) {
-                    console.error("Error al consultar la db: ", error);
-                    reject('Error al consultar');
-                }
-                resolve(results);
-            });
-        });
+        const results = await userRepository.getAllUsers();
 
         const users = results.map(result => ({
             username: result.username,
@@ -85,28 +51,12 @@ module.exports = {
 
     //Update rol
     updateUserRole: async function (username, roleid) {
-        return await new Promise((resolve, reject) => {
-            db.query(`UPDATE user SET role_id = ? WHERE username = ?;`, [roleid, username], (error, results) => {
-                if (error) {
-                    console.error("Error al actualitzar el rol: ", error);
-                    resolve(false);
-                }
-                resolve(results.affectedRows > 0);
-            });
-        });
+        return await userRepository.updateUserRole(username, roleid);
     },
 
     //Obté el rol d'un usuari
     getUserRole: async function (username) {
         if (username=='admin') return null;
-        return await new Promise((resolve, reject) => {
-            db.query('SELECT role_id id FROM user WHERE username = ?', [username], (error, results) => {
-                if (error) {
-                    console.error('Error al consultar la bdd:', error);
-                    reject('Error al consultar la bdd');
-                }
-                resolve(results[0].id);
-            });
-        });
+        return await userRepository.getRoleFromUsername(username);
     },
 }
