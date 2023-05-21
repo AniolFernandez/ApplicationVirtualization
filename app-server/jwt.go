@@ -45,8 +45,8 @@ func ProcessToken(access_token string) (string, bool) {
 
 		//Comprova que el servidor de destí sigui el que toca
 		if servidor, ok := claims["server"].(string); ok {
-			if servidor != ip {
-				log.Println("S'ha intentat accedir a ",ip," amb un token per ",servidor)
+			if servidor != ip && servidor != GLOBAL.Configuration.PUBLICADDR {
+				log.Println("S'ha intentat accedir a ",ip,"/",GLOBAL.Configuration.PUBLICADDR," amb un token per ",servidor)
 				return "", false
 			}
 			

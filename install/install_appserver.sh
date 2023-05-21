@@ -9,6 +9,8 @@ cd appserver
 
 
 #Demana per la configuració
+read -p "Escriu l'adreça pública del servei [Per defecte: localhost]: " pubaddr 
+pubaddr=${pubaddr:-"localhost"} 
 read -p "Escriu l'URL del servidor de control [Per defecte: https://localhost:3000]: " url 
 url=${url:-"https://localhost:3000"} 
 read -p "Escriu el secret generat pel servidor: " secret 
@@ -57,6 +59,7 @@ SECRET = $secret
 FSROOT = $path
 SECURE = $https
 DRI = $dri
+PUBLICADDR = $pubaddr
 EOF
 
 #Permetre registres inseguurs
