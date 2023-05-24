@@ -5,6 +5,7 @@ El sistema garantirà la integritat i confidencialitat de les dades dels usuaris
 Per a aconseguir-ho, el servei ens permet executar aplicacions d'escriptori dins de **contenidors de Docker** aïllats i retransmetre'n el flux de vídeo a través de la web de forma nativa sense la necessitat d'instal·lar cap plug-in al navegador, permetent d'aquesta manera l'execució d'aplicacions al *cloud*.
 
 ## Demo
+Enllaç al vídeo de la demo: [https://youtu.be/1SMrREKlg-Q](https://youtu.be/1SMrREKlg-Q)
 <p align="center">
   <img src="docs/demo.gif" alt="GIF Demo" />
 </p>
