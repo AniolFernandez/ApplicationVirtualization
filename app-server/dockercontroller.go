@@ -17,11 +17,13 @@ import (
 )
 
 const pullDelay = 1 * time.Minute
-var display int=99
+var displayStack = &TF_FIFOStack{}
 
 //Ens permet arrancar docker de forma asyncrona
 func StartDockerImage(imageName string, port string, volume string, close chan struct{}){
-	log.Println("Inicialitzant el contenidor (D:",display," P:",port,")...")
+    display := displayStack.Pop()
+    defer displayStack.Push(display)
+    log.Println("Inicialitzant el contenidor (D:",display," P:",port,")...")
 	//Obté docker API
 	dockerCli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
@@ -60,7 +62,6 @@ func StartDockerImage(imageName string, port string, volume string, close chan s
 		log.Println("Error en crear el contenidor de la imatge de docker", err)
 		return
 	}
-    display = display+1
 
 	// Inicia el contenidor
 	if err := dockerCli.ContainerStart(context.Background(), resp.ID, types.ContainerStartOptions{}); err != nil {

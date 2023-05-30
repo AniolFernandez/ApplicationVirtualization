@@ -31,6 +31,7 @@ func Initialize(){
     KeepAlive()
     InitializeVolumes()
     UpdateImages()
+    fillStack(displayStack)
 }
 
 func RedirectHandler(w http.ResponseWriter, r *http.Request) {
